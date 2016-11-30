@@ -36,4 +36,15 @@
             <artifactId>fili-core</artifactId>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.versioneye</groupId>
+                <artifactId>versioneye-maven-plugin</artifactId>
+                <configuration>
+                    <projectId>583dcca227cf4c00472ece64</projectId>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

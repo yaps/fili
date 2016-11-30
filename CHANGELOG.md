@@ -8,8 +8,13 @@ pull request if there was one.
 Current
 -------
 
+### Added:
+
+- [Maven-based integration with VersionEye dependency checking service](https://github.com/yahoo/fili/pull/-1)
+
 ### Changed:
 
+- [Build and Release cleanups](https://github.com/yahoo/fili/pull/-1)
 
 
 ### Deprecated:

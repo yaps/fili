@@ -42,6 +42,13 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>com.versioneye</groupId>
+                <artifactId>versioneye-maven-plugin</artifactId>
+                <configuration>
+                    <projectId>583dccb2f39d50003476f2b2</projectId>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>

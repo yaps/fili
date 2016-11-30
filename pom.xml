@@ -511,6 +511,17 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>com.versioneye</groupId>
+                    <artifactId>versioneye-maven-plugin</artifactId>
+                    <version>3.11.0</version>
+                    <configuration>
+                        <projectId>583dcadd8de3f3003bc79593</projectId>
+                        <licenseCheckBreakByUnknown>true</licenseCheckBreakByUnknown>
+                        <!-- Causes us to pick up transitive dependencies that are out-dated, which we can't control -->
+                        <!--<transitiveDependencies>true</transitiveDependencies>-->
+                    </configuration>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>${maven-source-plugin-version}</version>
@@ -670,6 +681,13 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>com.versioneye</groupId>
+                <artifactId>versioneye-maven-plugin</artifactId>
+                <configuration>
+                    <projectId>583dcadd8de3f3003bc79593</projectId>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
