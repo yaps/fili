@@ -1,4 +1,10 @@
 #!/bin/bash
+##
+# Run the build.
+##
+
+# TODO: Make the flow of this easier to follow for different build types
+
 PUBLISH_WHITELIST="master"
 RELEASE_TAG_REGEX="^[0-9]+\\.[0-9]+\\.[0-9]+"
 
