@@ -1339,6 +1339,10 @@ public class DataApiRequest extends ApiRequest {
         return new DataApiRequest(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, dateTimeSort);
     }
 
+    public DataApiRequest withDimensionFields(LinkedHashMap<Dimension, LinkedHashSet<DimensionField>> perDimensionFields) {
+        return new DataApiRequest(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, dateTimeSort);
+    }
+
     // CHECKSTYLE:ON
 
     /**

@@ -165,7 +165,7 @@ public class DimensionsServlet extends EndpointServlet {
      * @param containerRequestContext  The context of data provided by the Jersey container for this request
      *
      * @return Full view of the dimension
-     * @see DimensionsServlet#getDimensionFullView(Dimension, LogicalTableDictionary, UriInfo)
+     * @see DimensionsServlet#getDimensionFullView(Dimension, LinkedHashSet, LogicalTableDictionary, UriInfo)
      */
     @GET
     @Timed
@@ -196,6 +196,7 @@ public class DimensionsServlet extends EndpointServlet {
 
             Map<String, Object> result = getDimensionFullView(
                     apiRequest.getDimension(),
+                    apiRequest.getDimensionFields().get(apiRequest.getDimension()),
                     logicalTableDictionary,
                     uriInfo
             );
@@ -371,6 +372,7 @@ public class DimensionsServlet extends EndpointServlet {
      * Get the full view of the dimension.
      *
      * @param dimension  Dimension to get the view of
+     * @param dimensionFields  The (sub)set of dimension fields to display for this dimension
      * @param logicalTableDictionary  Logical Table Dictionary to look up the logical tables this dimension is on
      * @param uriInfo  UriInfo of the request
      *
@@ -378,15 +380,16 @@ public class DimensionsServlet extends EndpointServlet {
      */
     public static Map<String, Object> getDimensionFullView(
             Dimension dimension,
+            LinkedHashSet<DimensionField> dimensionFields,
             LogicalTableDictionary logicalTableDictionary,
-            final UriInfo uriInfo
+            UriInfo uriInfo
     ) {
         Map<String, Object> resultRow = new LinkedHashMap<>();
         resultRow.put("category", dimension.getCategory());
         resultRow.put("name", dimension.getApiName());
         resultRow.put("longName", dimension.getLongName());
         resultRow.put("description", dimension.getDescription());
-        resultRow.put("fields", dimension.getDimensionFields());
+        resultRow.put("fields", dimensionFields);
         resultRow.put("values", getDimensionValuesUrl(dimension, uriInfo));
         resultRow.put("cardinality", dimension.getCardinality());
         resultRow.put(

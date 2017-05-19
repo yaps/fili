@@ -7,6 +7,8 @@ import static com.yahoo.bard.webservice.web.ErrorMessageFormat.EMPTY_DICTIONARY;
 
 import com.yahoo.bard.webservice.data.dimension.Dimension;
 import com.yahoo.bard.webservice.data.dimension.DimensionDictionary;
+import com.yahoo.bard.webservice.data.dimension.DimensionField;
+import com.yahoo.bard.webservice.util.StreamUtils;
 import com.yahoo.bard.webservice.web.util.PaginationParameters;
 
 import com.google.common.collect.Sets;
@@ -15,10 +17,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
@@ -35,6 +39,7 @@ public class DimensionsApiRequest extends ApiRequest {
 
     private final LinkedHashSet<Dimension> dimensions;
     private final LinkedHashSet<ApiFilter> filters;
+    private final LinkedHashMap<Dimension, LinkedHashSet<DimensionField>> dimensionFields;
 
     /**
      * Parses the API request URL and generates the Api Request object.
@@ -73,6 +78,7 @@ public class DimensionsApiRequest extends ApiRequest {
 
         // Zero or more grouping dimensions may be specified
         this.dimensions = generateDimensions(dimension, dimensionDictionary);
+        this.dimensionFields = generateDimensionFields(dimensions);
 
         // Zero or more filtering dimensions may be referenced
         this.filters = generateFilters(filters, dimensionDictionary);
@@ -94,6 +100,7 @@ public class DimensionsApiRequest extends ApiRequest {
         super();
         this.dimensions = null;
         this.filters = null;
+        this.dimensionFields = new LinkedHashMap<>();
     }
 
     /**
@@ -105,6 +112,7 @@ public class DimensionsApiRequest extends ApiRequest {
      * @param builder  A response builder for the request
      * @param dimensions  Desired dimensions of the request
      * @param filters  Filters applied to the request
+     * @param dimensionFields  The fields of the requested dimension to display
      */
     private DimensionsApiRequest(
             ResponseFormatType format,
@@ -112,11 +120,13 @@ public class DimensionsApiRequest extends ApiRequest {
             UriInfo uriInfo,
             Response.ResponseBuilder builder,
             Iterable<Dimension> dimensions,
-            Iterable<ApiFilter> filters
+            Iterable<ApiFilter> filters,
+            LinkedHashMap<Dimension, LinkedHashSet<DimensionField>> dimensionFields
     ) {
         super(format, SYNCHRONOUS_ASYNC_AFTER_VALUE, paginationParameters, uriInfo, builder);
         this.dimensions = Sets.newLinkedHashSet(dimensions);
         this.filters = Sets.newLinkedHashSet(filters);
+        this.dimensionFields = dimensionFields;
     }
 
     /**
@@ -151,6 +161,22 @@ public class DimensionsApiRequest extends ApiRequest {
         LOG.trace("Generated set of dimensions: {}", generated);
         return generated;
     }
+
+    /**
+     * Generates the dimension fields to be displayed in full views of the requested dimensions.
+     * <p>
+     * By default, all the dimension fields for each dimension are displayed.
+     *
+     * @param dimensions  The dimensions requested
+     *
+     * @return A mapping from dimension to the fields to display
+     */
+    protected LinkedHashMap<Dimension, LinkedHashSet<DimensionField>> generateDimensionFields(
+            LinkedHashSet<Dimension> dimensions
+    ) {
+        return dimensions.stream().collect(StreamUtils.toLinkedMap(Function.identity(), Dimension::getDimensionFields));
+    }
+
 
     /**
      * Generates filter objects based on the filter query in the api request.
@@ -196,27 +222,31 @@ public class DimensionsApiRequest extends ApiRequest {
 
     // CHECKSTYLE:OFF
     public DimensionsApiRequest withFormat(ResponseFormatType format) {
-        return new DimensionsApiRequest(format, paginationParameters, uriInfo, builder, dimensions, filters);
+        return new DimensionsApiRequest(format, paginationParameters, uriInfo, builder, dimensions, filters, dimensionFields);
     }
 
     public DimensionsApiRequest withPaginationParameters(Optional<PaginationParameters> paginationParameters) {
-        return new DimensionsApiRequest(format, paginationParameters, uriInfo, builder, dimensions, filters);
+        return new DimensionsApiRequest(format, paginationParameters, uriInfo, builder, dimensions, filters, dimensionFields);
     }
 
     public DimensionsApiRequest withUriInfo(UriInfo uriInfo) {
-        return new DimensionsApiRequest(format, paginationParameters, uriInfo, builder, dimensions, filters);
+        return new DimensionsApiRequest(format, paginationParameters, uriInfo, builder, dimensions, filters, dimensionFields);
     }
 
     public DimensionsApiRequest withBuilder(Response.ResponseBuilder builder) {
-        return new DimensionsApiRequest(format, paginationParameters, uriInfo, builder, dimensions, filters);
+        return new DimensionsApiRequest(format, paginationParameters, uriInfo, builder, dimensions, filters, dimensionFields);
     }
 
     public DimensionsApiRequest withDimensions(LinkedHashSet<Dimension> dimensions) {
-        return new DimensionsApiRequest(format, paginationParameters, uriInfo, builder, dimensions, filters);
+        return new DimensionsApiRequest(format, paginationParameters, uriInfo, builder, dimensions, filters, dimensionFields);
     }
 
     public DimensionsApiRequest withFilters(Set<ApiFilter> filters) {
-        return new DimensionsApiRequest(format, paginationParameters, uriInfo, builder, dimensions, filters);
+        return new DimensionsApiRequest(format, paginationParameters, uriInfo, builder, dimensions, filters, dimensionFields);
+    }
+
+    public DimensionsApiRequest withDimensionFields(LinkedHashMap<Dimension, LinkedHashSet<DimensionField>> dimensionFields) {
+        return new DimensionsApiRequest(format, paginationParameters, uriInfo, builder, dimensions, filters, dimensionFields);
     }
     // CHECKSTYLE:ON
 
@@ -230,5 +260,9 @@ public class DimensionsApiRequest extends ApiRequest {
 
     public Set<ApiFilter> getFilters() {
         return this.filters;
+    }
+
+    public LinkedHashMap<Dimension, LinkedHashSet<DimensionField>> getDimensionFields() {
+        return this.dimensionFields;
     }
 }
