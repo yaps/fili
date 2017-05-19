@@ -293,18 +293,20 @@ public class DimensionsServlet extends EndpointServlet {
                             apiRequest.getFilters(),
                             paginationParameters
                     );
+            
+            Set<DimensionField> viewableFields = apiRequest.getDimensionFields().get(apiRequest.getDimension());
 
             Stream<Map<String, String>> rows = apiRequest.getPage(pagedRows)
                     .map(DimensionRow::entrySet)
                     .map(Set::stream)
-                    .map(stream ->
-                            stream.collect(
+                    .map(stream -> stream
+                            .filter(entry -> viewableFields.contains(entry.getKey()))
+                            .collect(
                                     StreamUtils.toLinkedMap(
                                             entry -> entry.getKey().getName().replace("desc", "description"),
                                             Map.Entry::getValue
                                     )
-                            )
-                    );
+                    ));
 
             Response response = formatResponse(
                     apiRequest,
