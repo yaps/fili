@@ -183,26 +183,23 @@ things, like Unique Identifier.
 我们在查询语句里添加了一个[筛选项](#filtering)，过滤掉(`notin`)`productRegion`维度里ID是`Americas Region`的数据行。我们
 去掉了`productRegion`这个分组维度，因为我们需要全球的整体数据，加了分组维度只会按地区显示某个地区的数据。
 
-这个例子向我们展示了如何在某一维度没有分组的时候，筛选这个维度里的数据。筛选功能十分强大，更多功能请参阅[Filters](#filtering)
-Oh, and one last thing about filters on the Data resource: Only `in` and `notin` are supported at the moment,
-but additional filter operations will be added soon!
+这个例子向我们展示了如何在某一维度没有分组的时候，筛选这个维度里的数据。筛选功能十分强大，更多功能请参阅[Filters](#filtering)。
 
-### Response Format Example ###
+### 数据格式举例 ###
 
-Now, the very last thing we need from our report: We need it [in CSV format](https://sampleapp.fili.io/v1/data/network/week?metrics=pageViews,dayAvgTimeSpent&dateTime=2014-09-01/2014-09-08&filters=productRegion|id-notin[Americas Region]&format=csv),
-so that we can pull it into Excel and play around with it! No worries, the Fili API supports CSV!
+最后，我们想对结果使用[CSV表示](https://sampleapp.fili.io/v1/data/network/week?metrics=pageViews,dayAvgTimeSpent&dateTime=2014-09-01/2014-09-08&filters=productRegion|id-notin[Americas Region]&format=csv)，
+把结果可以放进Excel做下一步处理。Fili API则完全支持CSV，
 
     GET https://sampleapp.fili.io/v1/data/network/week?metrics=pageViews,dayAvgTimeSpent&dateTime=2014-09-01/2014-09-08&filters=productRegion|id-notin[Americas Region]&format=csv
 
-For additional information about response format, take a look at the [Format](#response-format) section!
+Fili支持其他更多的表示格式，详见[格式](#response-format)单元！
 
-Query Options
+访问请求选项
 -------------
 
-Many of the resources in the Fili API support different query options. Here are the different options that are
-supported, and how the use the options:
+Fili API提供的数据支持很多访问选项：
 
-- [Pagination / Limit](#pagination--limit)
+- [分页 / Limit](#pagination--limit)
 - [Response Format](#response-format)
 - [Filtering](#filtering)
 - [Having](#having)
@@ -211,12 +208,12 @@ supported, and how the use the options:
 
 ### Pagination / Limit ###
 
-Pagination allows us to split our rows into pages, and then retrieve only the desired page. So rather than getting one 
-giant response with a million result rows and then write code to extract rows 5000 to 5999 ourselves, we can use 
-pagination to break the response into a thousand pages, each with a thousand result rows, and then ask for page 5.
+分页把数据结果分成多个页面，根据需求每次返回一个页面的数据。你不用一次性处理巨型的返回结果，可以用分页把结果分成很多页，
+每一页包含一小部分数据，抽取某一页数据去处理就行。
 
-At this point, only the [Dimension](#dimensions) and [Data](#data-queries) endpoints support pagination.
+目前，支持分页的有[维度](#dimensions)和[数据](#data-queries)访问接口。
 
+每一页除了包含该页的实际数据，还加入了分页参数数据。维度和数据接口的分页参数暂时不同，
 In addition to containing only the desired page of results, the response also contains pagination metadata. Currently, 
 the dimension and data endpoints show different metadata, but there are plans to have the dimension endpoint display
 the same kind of metadata as the data endpoint.
@@ -303,12 +300,11 @@ _Note that `default_per_page` applies **only** to the Dimension endpoint. It doe
 
     [Example](https://sampleapp.fili.io/v1/dimensions/productRegion/values?perPage=2&page=2): `GET https://sampleapp.fili.io/v1/dimensions/productRegion/values?perPage=2&page=2`
 
-### Response Format ###
+### 数据格式 ###
 
-Some resources support different response formats. The default response format is JSON, and some resources also support
-the CSV and JSON-API formats.
+部分访问资源支持不同的数据格式。默认的格式是JSON，某些资源也支持CSV和JSON-API格式。
 
-To change the format of a response, use the `format` query string parameter.
+如果需要配置数据格式，请在查询语句中加入`format`变量。
 
 [JSON](https://sampleapp.fili.io/v1/data/network/day/gender?metrics=pageViews&dateTime=2014-09-01/2014-09-02&format=json): `GET https://sampleapp.fili.io/v1/data/network/day/gender?metrics=pageViews&dateTime=2014-09-01/2014-09-02&format=json`
 
@@ -378,44 +374,38 @@ dateTime,gender|id,gender|desc,pageViews
 }
 ```
 
-### Filtering ###
+### 筛选 ###
 
-Filters allow you to filter by [dimension](#dimension) values. What is being filtered depends on the resource, but the
-general format for filters and their logical meaning is the same regardless of resource.
+你可以根据[维度](#dimension)值去筛选数据。不同的数据有不同的筛选结果，但是筛选的基本用法和原理都是一样的。
 
-The general format of a single filter is:
+筛选的一般格式是：
 
     dimensionName|dimensionField-filterOperation[some,list,of,url,encoded,filter,strings]
 
-These filters can be combined by comma-separating each individual filter, and the filter strings are [URL-encoded](http://en.wikipedia.org/wiki/Percent-encoding),
-comma-separated values:
+多个筛选项用逗号隔开，筛选采用[URL编码](http://en.wikipedia.org/wiki/Percent-encoding)，筛选值用逗号隔开：
 
     myDim|id-contains[foo,bar],myDim|id-notin[baz],yourDim|desc-startsWith[Once%20upon%20a%20time,in%20a%20galaxy]
 
-These are the available filter operations (Though not all of them are supported by all endpoints):
+支持的所有filter operations为（取决于不同接口）:
 
-- **in**: `In` filters are an exact match on a filter string, where only matching rows are included
-- **notin**: `Not In` filters are an exact match on a filter string, where all rows _except_ matching rows are included
-- **contains**: `Contains` filters search for the filter string to be contained in the searched field, and work like an 
-    `in` filter
-- **startsWith**: `Starts With` filters search for the filter string to be at the beginning of the searched field, and 
-    work like an `in` filter
+- **in**: `In`筛选是一个完全匹配项-只有在筛选项里列出的数据列才会被选中返回
+- **notin**: `Not In`筛选也是一个完全匹配项-只有_没有_在筛选项里列出的数据列才会被选中返回
+- **contains**: `Contains`筛选出值包含在指令内容中的数据，类似于`in`筛选
+- **startsWith**: `Starts With`筛选出值以制定内容其实的数据，类似于`in`筛选
 
-Let's take an example, and break down what it means.
+举个例子解释一下。
 
-[Example](https://sampleapp.fili.io/v1/dimensions/productRegion/values?filters=productRegion|id-notin[Americas%20Region,Europe%20Region],productRegion|desc-contains[Region]): 
+[比如](https://sampleapp.fili.io/v1/dimensions/productRegion/values?filters=productRegion|id-notin[Americas%20Region,Europe%20Region],productRegion|desc-contains[Region]):
 
     GET https://sampleapp.fili.io/v1/dimensions/productRegion/values?filters=productRegion|id-notin[Americas%20Region,Europe%20Region],productRegion|desc-contains[Region]
 
-What this filter parameter means is the following: 
+筛选的含义是：
 
-    Return dimension values that 
-        don't have 
-            productRegion dimension values 
-            with an ID of "Americas Region" or "Europe Region", 
-        and have 
-            productRegion dimension values 
-            with a description that contains "Region".
+    返回满足以下要求的维度数值：
+        不包含
+            ID是"Americas Region"或"Europe Region"的productRegion维度值
+        包含
+            描述语句包含"Region"单词的productRegion维度值
 
 
 ### Having ###
