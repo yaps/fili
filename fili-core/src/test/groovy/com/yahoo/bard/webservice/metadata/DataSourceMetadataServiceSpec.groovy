@@ -22,7 +22,7 @@ class DataSourceMetadataServiceSpec extends BaseDataSourceMetadataSpec {
 
     def "test metadata service updates segment availability for physical tables and access methods behave correctly"() {
         setup:
-        JerseyTestBinder jtb = new JerseyTestBinder()
+        JerseyTestBinder jerseyTestBinder = new JerseyTestBinder()
         DataSourceName dataSourceName = DataSourceName.of(tableName)
 
         DataSourceMetadataService metadataService = new DataSourceMetadataService()
@@ -49,7 +49,7 @@ class DataSourceMetadataServiceSpec extends BaseDataSourceMetadataSpec {
         [[interval12]].containsAll(metadataService.getAvailableIntervalsByDataSource(dataSourceName).values())
 
         cleanup:
-        jtb.tearDown()
+        jerseyTestBinder.tearDown()
     }
 
     def "grouping segment data by date time behave as expected"() {
@@ -68,8 +68,8 @@ class DataSourceMetadataServiceSpec extends BaseDataSourceMetadataSpec {
         Map<String, List<Interval>> intervalByColumn = DataSourceMetadataService.groupIntervalByColumn(metadata)
 
         expect:
-        intervalByColumn.keySet() == (dimensions123 + metrics123) as Set
-        intervalByColumn.get(dimensions123.get(0)) == [interval12]
+        intervalByColumn.keySet() == (dimensions + metrics) as Set
+        intervalByColumn.get(dimensions.get(0)) == [interval12]
     }
 
     def "accessing availability by column throws exception if the table does not exist in datasource metadata service"() {
