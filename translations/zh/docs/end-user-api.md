@@ -410,51 +410,43 @@ dateTime,gender|id,gender|desc,pageViews
 
 ### Having ###
 
-Having clauses allow you to to filter out result rows based on conditions on aggregated metrics. 
-This is similar to, but distinct from [Filtering](#filtering), which allows you to filter out results based on 
-dimensions. As a result, the format for writing a having clause is very similar to that of a filter. 
+Having语句可以根据聚合数据条件来筛选返回列。这和根据维度值过滤的[筛选](#filtering)不尽相同，因此，描述having语句的语法与
+之类似。
 
-The general format of a single having clause is:
+单个having语句的一般格式为：
 
     metricName-operator[x,y,z]
     
-where the parameters `x, y, z` are numbers (integer or float) in decimal (`3, 3.14159`) or scientific (`4e8`) notation. 
-Although three numbers are used in the template above, the list of parameters may be of any length, but must be 
-non-empty.
+这里的三个参数`x, y, z`可以是整数，小数（`3, 3.14159`）或者用科学计数法表示的数字（`4e8`）。实际情况下参数列可以包含任意
+数量的参数，但参数咧不能为空。
 
-These clauses can be combined by comma-separating individual clauses:
+多个Having语句用逗号隔开：
 
     metricName1-greaterThan[w,x],metricName2-equals[y],metricName3-notLessThan[y, z]
-  
-which is read as _return all rows such that metricName1 is greater than w or x, and metricName2 is
-equal to y, and metricName3 is less than neither y nor z_.
 
-Note that you may only perform a having filter on metrics that have been requested in the `metrics` clause.
+该语句的含义是_返回所有metricName1的值大于w或者x，metricName2的值等于y，metricName3的值大于y和z的所有数据列_。
 
-Following are the available having operators. Each operator has an associated shorthand. The shorthand is indicated
-in parenthesis after the name of the operator. Both the full name and the shorthand may be used in a query.
+注意，你只能将having语句应用于出现在`metrics`语句中的数据。
 
-- **equal(eq)**: `Equal` returns rows whose having-metric is equal to at least one of the specified values.
-- **greaterThan(gt)**: `Greater Than` returns rows whose having-metric is strictly greater than at least one of the
-specified values.
-- **lessThan(lt)**: `Less Than` returns rows whose having-metric is strictly less than at least one of the specified 
-values.
+一下是所有支持的having运算符。每一个运算符有一个简写形式，简写形式在每一个运算符完整名称后的括号内列出，你可以在查询语句
+中选择全名或者简写。
 
-Each operation may also be prefixed with `not`, which negates the operation. So `noteq` returns all the rows whose
-having-metric is equal to _none_ of the specified values.
+- **equal(eq)**: `Equal`返回对应的数据值至少等于某一个指定值的数据行。
+- **greaterThan(gt)**: `Greater Than`返回对应的数据值至少大于某一个指定值的数据行。
+- **lessThan(lt)**: `Less Than`返回对应的数据值至少小于某一个指定值的数据行。
 
-Let's take [an example](https://sampleapp.fili.io/v1/data/network/day?metrics=pageViews,users&dateTime=2014-09-01/2014-09-08&having=pageViews-notgt[4e9],users-lt[1e8]) and break down what it means.
+每个运算符可以在前面加上一个`not`，执行相反的操作。So `noteq`返回对应的数据值不等于任何一个指定值的数据行。
+
+举个[例子](https://sampleapp.fili.io/v1/data/network/day?metrics=pageViews,users&dateTime=2014-09-01/2014-09-08&having=pageViews-notgt[4e9],users-lt[1e8])来具体解释。
 
     GET https://sampleapp.fili.io/v1/data/network/day?metrics=pageViews,users&dateTime=2014-09-01/2014-09-08&having=pageViews-notgt[4e9],users-lt[1e8]
 
-What this having clause means is the following: 
+此having语句的意思是：
 
-    Return the page views and users of all events aggregated at the day level from September 1 to 
-    September 8, 2014 that
-         have at most 400 million page views
-         and 
-         have strictly more than 100 million users
-         
+    返回2014九月一号到八号每天的满足一下条件的页面访问和访问者
+        最多四亿次页面访问
+        大于1亿访问者
+
 #### Caveats ####         
 
 The having filter is only applied at the Druid level. Therefore, the results of a having filter are not guaranteed to
