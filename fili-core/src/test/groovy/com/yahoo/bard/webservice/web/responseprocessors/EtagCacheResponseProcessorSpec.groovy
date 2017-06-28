@@ -73,6 +73,7 @@ class EtagCacheResponseProcessorSpec extends Specification {
 
         then:
         json.get(DruidJsonResponseContentKeys.RESPONSE.getName()) == MAPPER.readTree('[{"k1":"v1"}]')
+        json.get(DruidJsonResponseContentKeys.CACHED_RESPONSE.getName()).asBoolean()
     }
 
     def "When status code is OK but etag is missing, processResponse moves on without caching"() {
@@ -86,6 +87,7 @@ class EtagCacheResponseProcessorSpec extends Specification {
 
         then:
         1 * next.processResponse(null, druidAggregationQuery, _ as LoggingContext)
+        !json.get(DruidJsonResponseContentKeys.CACHED_RESPONSE.getName()).asBoolean()
     }
 
     def "processResponse caches response, including etag, on OK response"() {
@@ -104,5 +106,6 @@ class EtagCacheResponseProcessorSpec extends Specification {
 
         then:
         1 * dataCache.set(CACHE_KEY, "someEtag", 'null')
+        !json.get(DruidJsonResponseContentKeys.CACHED_RESPONSE.getName()).asBoolean()
     }
 }
