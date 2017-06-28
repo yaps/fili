@@ -21,7 +21,7 @@ Current
 
 ### Changed:
 
-- [Include ETags on responses](https://github.com/yahoo/fili/issues/375)
+- [Include ETags on responses](https://github.com/yahoo/fili/pull/417)
     * Let clients know that weather a response is cached(new) or fetched from cache offers a lot of ability for
     optimizing clients who poll for updated results.
 
