@@ -21,6 +21,10 @@ Current
 
 ### Changed:
 
+- [Include ETags on responses](https://github.com/yahoo/fili/issues/375)
+    * Let clients know that weather a response is cached(new) or fetched from cache offers a lot of ability for
+    optimizing clients who poll for updated results.
+
 - [Fix a bug where table loader uses nested compute if absent](https://github.com/yahoo/fili/pull/407)
     * Nesting `computeIfAbsent` on maps can cause a lot of issues in the map internals that causes weird behavior, nesting structure is now removed
 
