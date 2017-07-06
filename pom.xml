@@ -103,6 +103,7 @@
         <checkstyle.config.location>checkstyle-style.xml</checkstyle.config.location>
         <checkstyle.suppressions.location>checkstyle-suppressions.xml</checkstyle.suppressions.location>
         <checkstyle.version>6.14.1</checkstyle.version>
+        <checkstyle.groovy.codenarc.version>0.27.0</checkstyle.groovy.codenarc.version>
         <checkstyle.resourceIncludes>**/*.properties*</checkstyle.resourceIncludes>
 
         <dependency.locations.enabled>false</dependency.locations.enabled>
@@ -503,6 +504,12 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.codenarc</groupId>
+            <artifactId>CodeNarc</artifactId>
+            <version>${checkstyle.groovy.codenarc.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -838,6 +845,26 @@
                         </reportPlugin>
                     </reportPlugins>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>codenarc-maven-plugin</artifactId>
+                <version>0.18-1</version>
+                <configuration>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <includes>%regex[.*Spec.*]</includes>
+                    <maxPriority1Violations>0</maxPriority1Violations>
+                    <maxPriority2Violations>0</maxPriority2Violations>
+                    <maxPriority3Violations>0</maxPriority3Violations>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>codenarc</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
