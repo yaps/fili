@@ -15,7 +15,6 @@ import spock.lang.Specification
 
 import java.util.stream.Collectors
 import java.util.stream.Stream
-
 /**
  * Contains a collection of utility methods to aid in testing functionality that relies on table availability, like
  * partial data and volatility.

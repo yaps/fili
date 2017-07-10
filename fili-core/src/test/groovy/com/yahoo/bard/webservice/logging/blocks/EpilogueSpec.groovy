@@ -10,9 +10,11 @@ import com.yahoo.bard.webservice.util.GroovyTestUtils
 
 import com.fasterxml.jackson.databind.ObjectMapper
 
-import rx.Observable
 import spock.lang.Specification
 import spock.lang.Unroll
+
+import io.reactivex.Observable
+
 
 class EpilogueSpec extends Specification {
 

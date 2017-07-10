@@ -61,10 +61,10 @@ import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import rx.Observable;
-import rx.observables.ConnectableObservable;
-import rx.subjects.PublishSubject;
-import rx.subjects.Subject;
+import io.reactivex.Observable;
+import io.reactivex.observables.ConnectableObservable;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.Subject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -399,7 +399,8 @@ public class DataServlet extends CORSPreflightServlet implements BardConfigResou
                 context = new RequestContext(containerRequestContext, readCache);
             }
 
-            Subject<PreResponse, PreResponse> queryResultsEmitter = PublishSubject.create();
+
+            Subject<PreResponse> queryResultsEmitter = PublishSubject.create();
 
             setupAsynchronousWorkflows(
                     apiRequest,
