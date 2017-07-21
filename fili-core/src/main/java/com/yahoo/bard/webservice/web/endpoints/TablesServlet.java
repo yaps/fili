@@ -4,6 +4,7 @@ package com.yahoo.bard.webservice.web.endpoints;
 
 import static com.yahoo.bard.webservice.config.BardFeatureFlag.UPDATED_METADATA_COLLECTION_NAMES;
 import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
+import static javax.ws.rs.core.Response.Status.OK;
 
 import com.yahoo.bard.webservice.application.ObjectMappersSuite;
 import com.yahoo.bard.webservice.data.config.ResourceDictionaries;
@@ -14,6 +15,7 @@ import com.yahoo.bard.webservice.logging.blocks.TableRequest;
 import com.yahoo.bard.webservice.table.LogicalTable;
 import com.yahoo.bard.webservice.table.LogicalTableDictionary;
 import com.yahoo.bard.webservice.table.PhysicalTable;
+import com.yahoo.bard.webservice.table.TableGroup;
 import com.yahoo.bard.webservice.util.SimplifiedIntervalList;
 import com.yahoo.bard.webservice.web.RequestMapper;
 import com.yahoo.bard.webservice.web.RequestValidationException;
@@ -32,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -51,6 +54,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -238,7 +242,7 @@ public class TablesServlet extends EndpointServlet implements BardConfigResource
             String output = objectMappers.getMapper().writeValueAsString(result);
             LOG.debug("Tables Endpoint Response: {}", output);
             RequestLog.stopTiming(this);
-            return Response.status(Response.Status.OK).entity(output).build();
+            return Response.status(OK).entity(output).build();
         } catch (RequestValidationException e) {
             LOG.debug(e.getMessage(), e);
             RequestLog.stopTiming(this);
@@ -255,6 +259,70 @@ public class TablesServlet extends EndpointServlet implements BardConfigResource
             return Response.status(Response.Status.BAD_REQUEST).entity(msg).build();
         }
     }
+
+
+    @GET
+    @Timed
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{tableName}/{granularity}/{dimensions:.*}")
+    public Response getTableAvailability(
+            @PathParam("tableName") String tableName,
+            @PathParam("granularity") String granularity,
+            @PathParam("dimensions") List<PathSegment> dimensions,
+            @QueryParam("metrics") String metrics,
+            @QueryParam("dateTime") String intervals,
+            @QueryParam("filters") String filters,
+            @Context UriInfo uriInfo,
+            @Context final ContainerRequestContext containerRequestContext
+    ) {
+        RequestLog.startTiming(this);
+        RequestLog.record(new TableRequest(tableName, granularity));
+
+        TablesApiRequest tablesApiRequest = new TablesApiRequest(
+                tableName,
+                granularity,
+                null,
+                "",
+                "",
+                uriInfo,
+                this,
+                dimensions,
+                metrics,
+                intervals,
+                filters,
+                null
+        );
+
+        try {
+            if (requestMapper != null) {
+                tablesApiRequest = (TablesApiRequest) requestMapper.apply(tablesApiRequest, containerRequestContext);
+            }
+
+            Map<String, Object> result = getLogicalTableFullView(tablesApiRequest, uriInfo);
+            String output = objectMappers.getMapper().writeValueAsString(result);
+
+            LOG.debug("Tables Endpoint Response: {}", output);
+            RequestLog.stopTiming(this);
+            return Response.status(OK).entity(output).build();
+        } catch (RequestValidationException requestValidationException) {
+            LOG.debug(requestValidationException.getMessage(), requestValidationException);
+            RequestLog.stopTiming(this);
+            return Response.status(requestValidationException.getStatus())
+                    .entity(requestValidationException.getErrorHttpMsg())
+                    .build();
+        } catch (JsonProcessingException jsonProcessingException) {
+            String message = String.format(
+                    "Internal server error. JsonProcessingException: %s",
+                    jsonProcessingException.getMessage()
+            );
+            LOG.error(message, jsonProcessingException);
+            RequestLog.stopTiming(this);
+            return Response.status(INTERNAL_SERVER_ERROR)
+                    .entity(message)
+                    .build();
+        }
+    }
+
 
     /**
      * Get all the tables full view.
