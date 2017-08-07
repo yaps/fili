@@ -15,7 +15,7 @@ class CacheLastObserverSpec extends Specification {
         CacheLastObserver<Integer> observer = new CacheLastObserver<>()
 
         when: "We subscribe to an Observable that generates a bunch of messages"
-        Observable.from(messages).subscribe(observer)
+        Observable.just(messages).subscribe(observer)
 
         then: "The observable remembers only the last message"
         if (messages) {

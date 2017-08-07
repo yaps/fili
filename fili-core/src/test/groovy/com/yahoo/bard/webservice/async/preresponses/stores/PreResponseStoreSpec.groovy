@@ -5,7 +5,7 @@ package com.yahoo.bard.webservice.async.preresponses.stores
 import com.yahoo.bard.webservice.util.ReactiveTestUtils
 import com.yahoo.bard.webservice.web.PreResponse
 
-import io.reactivex.subscribers.TestSubscriber
+import io.reactivex.observers.TestObserver
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -63,7 +63,7 @@ abstract class PreResponseStoreSpec extends Specification {
              * is available.
              */
             preResponseStore.save("$it", PreResponseTestingUtils.buildPreResponse("2016-04-2${it}T00:00:00.000-05:00"))
-                    .toBlocking().first()
+                    .blockingFirst()
         }
 
         childSetup()
@@ -72,28 +72,28 @@ abstract class PreResponseStoreSpec extends Specification {
     @Unroll
     def "Getting #id returns #oldPreResponse, but after setting #id to #newPreResponse, getting #id returns #newPreResponse"() {
         setup:
-        TestSubscriber<PreResponse> getSubscriber = new TestSubscriber<>()
-        TestSubscriber<String> saveSubscriber = new TestSubscriber<>()
-        TestSubscriber<PreResponse> updateSubscriber = new TestSubscriber<>()
+        TestObserver<PreResponse> getSubscriber = new TestObserver<>()
+        TestObserver<String> saveSubscriber = new TestObserver<>()
+        TestObserver<PreResponse> updateSubscriber = new TestObserver<>()
 
         when:
         preResponseStore.get(id).subscribe(getSubscriber)
 
         then:
         ReactiveTestUtils.assertCompletedWithoutError(getSubscriber)
-        getSubscriber.assertReceivedOnNext(oldPreResponse)
+        getSubscriber.assertResult(oldPreResponse as PreResponse[])
 
         when:
         preResponseStore.save(id, newPreResponse).subscribe(saveSubscriber)
 
         then:
         ReactiveTestUtils.assertCompletedWithoutError(saveSubscriber)
-        saveSubscriber.assertReceivedOnNext([id])
+        saveSubscriber.assertResult(id)
 
         and: "verify that the save method correctly changed the value in the store"
         preResponseStore.get(id).subscribe(updateSubscriber)
         ReactiveTestUtils.assertCompletedWithoutError(updateSubscriber)
-        updateSubscriber.assertReceivedOnNext([newPreResponse])
+        updateSubscriber.assertResult(newPreResponse)
 
         where:
         id  | oldPreResponse                                                              | newPreResponse
