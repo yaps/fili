@@ -1,4 +1,4 @@
-// Copyright 2017 Yahoo Inc.
+// Copyright 2016 Yahoo Inc.
 // Licensed under the terms of the Apache license. Please see LICENSE.md file distributed with this work for terms.
 package com.yahoo.bard.webservice.data.metric;
 
@@ -81,7 +81,7 @@ public class LogicalMetric {
     }
 
     /**
-     * Constructor. Builds a Logical Metric whose instance variables are all provided by a LogicalMetricInfo object.
+     * Constructor. Builds a Logical Metric whose instance variables are provided by a LogicalMetricInfo object.
      *
      * @param templateDruidQuery  Query the metric needs
      * @param calculation  Mapper for the metric

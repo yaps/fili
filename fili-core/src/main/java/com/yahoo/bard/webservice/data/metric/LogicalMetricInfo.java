@@ -1,13 +1,13 @@
-// Copyright 2016 Yahoo Inc.
+// Copyright 2017 Yahoo Inc.
 // Licensed under the terms of the Apache license. Please see LICENSE.md file distributed with this work for terms.
 package com.yahoo.bard.webservice.data.metric;
 
 /**
  * Contains information passed to LogicalMetric constructor.
- * The reason for having this class is for allowing custom logical metric configurations.
+ * The reason for having this class is to allow custom logical metric configurations.
  * For example, if only metric name is provided, other metric info, like description, are set to default, but if people
- * want to configure description, for example, they can add that info, and the user-provided description is
- * going to be picked up during logical metric construction.
+ * want to configure description, for example, they can add the description, which is going to be picked up during
+ * logical metric construction.
  */
 public class LogicalMetricInfo {
     private final String name;
@@ -17,7 +17,7 @@ public class LogicalMetricInfo {
 
     /**
      * Constructor. Builds a fully specified Logical Metric Info.
-
+     *
      * @param name  Name of the metric
      * @param longName  Long name of the metric
      * @param category  Category of the metric
@@ -31,7 +31,8 @@ public class LogicalMetricInfo {
     }
 
     /**
-     * Constructor. Builds a fully specified Logical Metric Info.
+     * Constructor.
+     * Builds a partially specified Logical Metric Info.
      *
      * @param name  Name of the metric
      */
@@ -40,7 +41,8 @@ public class LogicalMetricInfo {
     }
 
     /**
-     * Constructor. Builds a fully specified Logical Metric Info.
+     * Constructor.
+     * Builds a partially specified Logical Metric Info.
      *
      * @param name  Name of the metric
      * @param longName  Long name of the metric

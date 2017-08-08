@@ -133,10 +133,10 @@ public abstract class MetricMaker {
      * @param metricName  Name for the metric we're making
      * @param dependentMetrics  Metrics this metric depends on
      *
-     * @return The new logicalMetric
+     * @return the new logicalMetric
      *
      * @deprecated logical metric needs more config-richness to not just configure metric name, but also metric long
-     * name, description, etc. Use {@link #makeInner(LogicalMetricInfo, List)}
+     * name, description, etc. Use {@link #makeInner(LogicalMetricInfo, List)} instead.
      */
     @Deprecated
     protected abstract LogicalMetric makeInner(String metricName, List<String> dependentMetrics);
@@ -147,7 +147,7 @@ public abstract class MetricMaker {
      * @param logicalMetricInfo  Logical metric info provider
      * @param dependentMetrics  Metrics this metric depends on
      *
-     * @return The new logicalMetric
+     * @return the new logicalMetric
      */
     protected LogicalMetric makeInner(LogicalMetricInfo logicalMetricInfo, List<String> dependentMetrics) {
         String message = "Current implementation does not support makeInner(LogicalMetricInfo, List)";
