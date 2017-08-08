@@ -7,6 +7,7 @@ import static com.yahoo.bard.webservice.druid.model.postaggregation.ArithmeticPo
 import static com.yahoo.bard.webservice.druid.util.FieldConverterSupplier.sketchConverter;
 
 import com.yahoo.bard.webservice.data.metric.LogicalMetric;
+import com.yahoo.bard.webservice.data.metric.LogicalMetricInfo;
 import com.yahoo.bard.webservice.data.metric.MetricDictionary;
 import com.yahoo.bard.webservice.data.metric.TemplateDruidQuery;
 import com.yahoo.bard.webservice.data.time.ZonelessTimeGrain;
@@ -83,6 +84,21 @@ public class AggregationAverageMaker extends MetricMaker {
         TemplateDruidQuery outerQuery = buildOuterQuery(metricName, sourceMetric, innerQuery);
 
         return new LogicalMetric(outerQuery, NO_OP_MAPPER, metricName);
+    }
+
+    @Override
+    protected LogicalMetric makeInner(LogicalMetricInfo logicalMetricInfo, List<String> dependentMetrics) {
+        // Get the Metric that is being averaged over
+        LogicalMetric dependentMetric = metrics.get(dependentMetrics.get(0));
+
+        // Get the field being subtotalled in the inner query
+        MetricField sourceMetric = convertToSketchEstimateIfNeeded(dependentMetric.getMetricField());
+
+        // Build the TemplateDruidQuery for the metric
+        TemplateDruidQuery innerQuery = buildInnerQuery(sourceMetric, dependentMetric.getTemplateDruidQuery());
+        TemplateDruidQuery outerQuery = buildOuterQuery(logicalMetricInfo.getName(), sourceMetric, innerQuery);
+
+        return new LogicalMetric(outerQuery, NO_OP_MAPPER, logicalMetricInfo);
     }
 
     /**

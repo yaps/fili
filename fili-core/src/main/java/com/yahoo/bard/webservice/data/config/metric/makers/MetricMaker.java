@@ -3,6 +3,7 @@
 package com.yahoo.bard.webservice.data.config.metric.makers;
 
 import com.yahoo.bard.webservice.data.metric.LogicalMetric;
+import com.yahoo.bard.webservice.data.metric.LogicalMetricInfo;
 import com.yahoo.bard.webservice.data.metric.MetricDictionary;
 import com.yahoo.bard.webservice.data.metric.TemplateDruidQuery;
 import com.yahoo.bard.webservice.data.metric.mappers.NoOpResultSetMapper;
@@ -133,8 +134,26 @@ public abstract class MetricMaker {
      * @param dependentMetrics  Metrics this metric depends on
      *
      * @return The new logicalMetric
+     *
+     * @deprecated logical metric needs more config-richness to not just configure metric name, but also metric long
+     * name, description, etc. Use {@link #makeInner(LogicalMetricInfo, List)}
      */
+    @Deprecated
     protected abstract LogicalMetric makeInner(String metricName, List<String> dependentMetrics);
+
+    /**
+     * Delegated to for actually making the metric.
+     *
+     * @param logicalMetricInfo  Logical metric info provider
+     * @param dependentMetrics  Metrics this metric depends on
+     *
+     * @return The new logicalMetric
+     */
+    protected LogicalMetric makeInner(LogicalMetricInfo logicalMetricInfo, List<String> dependentMetrics) {
+        String message = "Current implementation does not support makeInner(LogicalMetricInfo, List)";
+        LOG.error(message);
+        throw new UnsupportedOperationException(message);
+    }
 
     /**
      * Get the number of dependent metrics the maker requires for making the metric.

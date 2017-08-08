@@ -27,7 +27,7 @@ public class LogicalMetric {
      * @param templateDruidQuery  Query the metric needs
      * @param calculation  Mapper for the metric
      * @param name  Name of the metric
-     * @param longName Long name of the metric
+     * @param longName  Long name of the metric
      * @param category  Category of the metric
      * @param description  Description of the metric
      */
@@ -78,6 +78,28 @@ public class LogicalMetric {
      */
     public LogicalMetric(TemplateDruidQuery templateDruidQuery, ResultSetMapper calculation, String name) {
         this(templateDruidQuery, calculation, name, name, DEFAULT_CATEGORY, name);
+    }
+
+    /**
+     * Constructor. Builds a Logical Metric whose instance variables are all provided by a LogicalMetricInfo object.
+     *
+     * @param templateDruidQuery  Query the metric needs
+     * @param calculation  Mapper for the metric
+     * @param logicalMetricInfo  Logical Metric info provider
+     */
+    public LogicalMetric(
+            TemplateDruidQuery templateDruidQuery,
+            ResultSetMapper calculation,
+            LogicalMetricInfo logicalMetricInfo
+    ) {
+        this(
+                templateDruidQuery,
+                calculation,
+                logicalMetricInfo.getName(),
+                logicalMetricInfo.getLongName(),
+                logicalMetricInfo.getCategory(),
+                logicalMetricInfo.getDescription()
+        );
     }
 
     public String getName() {
