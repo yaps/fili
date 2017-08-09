@@ -23,7 +23,7 @@ import com.yahoo.bard.webservice.util.AllPagesPagination;
 import com.yahoo.bard.webservice.util.Pagination;
 import com.yahoo.bard.webservice.util.StreamUtils;
 import com.yahoo.bard.webservice.util.Utils;
-import com.yahoo.bard.webservice.web.ApiRequest;
+import com.yahoo.bard.webservice.web.ApiRequestImpl;
 import com.yahoo.bard.webservice.web.JobNotFoundException;
 import com.yahoo.bard.webservice.web.JobsApiRequest;
 import com.yahoo.bard.webservice.web.PreResponse;
@@ -448,7 +448,7 @@ public class JobsServlet extends EndpointServlet {
     protected void handleResultsResponse(
             Observable<PreResponse> preResponseObservable,
             AsyncResponse asyncResponse,
-            ApiRequest apiRequest
+            ApiRequestImpl apiRequest
     ) {
 
         preResponseObservable

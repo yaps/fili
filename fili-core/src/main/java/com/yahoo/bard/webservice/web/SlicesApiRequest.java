@@ -34,7 +34,7 @@ import javax.ws.rs.core.UriInfo;
 /**
  * Slices API Request. Such an API Request binds, validates, and models the parts of a request to the slices endpoint.
  */
-public class SlicesApiRequest extends ApiRequest {
+public class SlicesApiRequest extends ApiRequestImpl {
     private static final Logger LOG = LoggerFactory.getLogger(SlicesApiRequest.class);
     public static final String REQUEST_MAPPER_NAMESPACE = "slicesApiRequestMapper";
 

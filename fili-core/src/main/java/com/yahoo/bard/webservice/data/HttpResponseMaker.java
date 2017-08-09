@@ -16,7 +16,7 @@ import com.yahoo.bard.webservice.data.dimension.DimensionDictionary;
 import com.yahoo.bard.webservice.data.dimension.DimensionField;
 import com.yahoo.bard.webservice.druid.model.query.DruidQuery;
 import com.yahoo.bard.webservice.util.Pagination;
-import com.yahoo.bard.webservice.web.ApiRequest;
+import com.yahoo.bard.webservice.web.ApiRequestImpl;
 import com.yahoo.bard.webservice.web.PreResponse;
 import com.yahoo.bard.webservice.web.ResponseData;
 import com.yahoo.bard.webservice.web.ResponseFormatType;
@@ -77,7 +77,7 @@ public class HttpResponseMaker {
      */
     public javax.ws.rs.core.Response buildResponse(
             PreResponse preResponse,
-            ApiRequest apiRequest
+            ApiRequestImpl apiRequest
     ) {
         ResponseBuilder rspBuilder = createResponseBuilder(
                 preResponse.getResultSet(),
@@ -109,7 +109,7 @@ public class HttpResponseMaker {
     private ResponseBuilder createResponseBuilder(
             ResultSet resultSet,
             ResponseContext responseContext,
-            ApiRequest apiRequest
+            ApiRequestImpl apiRequest
     ) {
         @SuppressWarnings("unchecked")
         ResponseFormatType responseFormatType = apiRequest.getFormat();

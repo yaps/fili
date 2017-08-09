@@ -39,7 +39,7 @@ public class FiliResponseWriterSelector implements ResponseWriterSelector {
      * @return Response writer for the given format type
      */
     @Override
-    public Optional<ResponseWriter> select(ApiRequest request) {
+    public Optional<ResponseWriter> select(ApiRequestImpl request) {
         ResponseFormatType format = request.getFormat();
         if (format == null) {
             format = ResponseFormatType.JSON;

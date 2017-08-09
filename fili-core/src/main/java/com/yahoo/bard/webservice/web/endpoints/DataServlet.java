@@ -40,7 +40,7 @@ import com.yahoo.bard.webservice.logging.blocks.DruidFilterInfo;
 import com.yahoo.bard.webservice.table.LogicalTable;
 import com.yahoo.bard.webservice.table.resolver.NoMatchFoundException;
 import com.yahoo.bard.webservice.util.Either;
-import com.yahoo.bard.webservice.web.ApiRequest;
+import com.yahoo.bard.webservice.web.ApiRequestImpl;
 import com.yahoo.bard.webservice.web.DataApiRequest;
 import com.yahoo.bard.webservice.web.PreResponse;
 import com.yahoo.bard.webservice.web.RequestMapper;
@@ -453,7 +453,7 @@ public class DataServlet extends CORSPreflightServlet implements BardConfigResou
      * @param  httpResponseMaker  The factory for building HTTP responses
      */
     private void setupAsynchronousWorkflows(
-            ApiRequest apiRequest,
+            ApiRequestImpl apiRequest,
             Observable<PreResponse> queryResultsEmitter,
             ContainerRequestContext containerRequestContext,
             AsyncResponse asyncResponse,

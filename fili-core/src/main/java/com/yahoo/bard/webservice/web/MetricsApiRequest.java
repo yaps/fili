@@ -21,7 +21,7 @@ import javax.ws.rs.core.UriInfo;
 /**
  * Metrics API Request. Such an API Request binds, validates, and models the parts of a request to the tables endpoint.
  */
-public class MetricsApiRequest extends ApiRequest {
+public class MetricsApiRequest extends ApiRequestImpl {
     private static final Logger LOG = LoggerFactory.getLogger(MetricsApiRequest.class);
     public static final String REQUEST_MAPPER_NAMESPACE = "metricsApiRequestMapper";
 

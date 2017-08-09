@@ -77,7 +77,7 @@ import javax.ws.rs.core.UriInfo;
 /**
  * Data API Request. Such an API Request binds, validates, and models the parts of a request to the data endpoint.
  */
-public class DataApiRequest extends ApiRequest {
+public class DataApiRequest extends ApiRequestImpl {
     private static final Logger LOG = LoggerFactory.getLogger(DataApiRequest.class);
     private static final String RATIO_METRIC_CATEGORY = "Ratios";
     public static final String REQUEST_MAPPER_NAMESPACE = "dataApiRequestMapper";

@@ -3,7 +3,7 @@
 package com.yahoo.bard.webservice.web.endpoints;
 
 import com.yahoo.bard.webservice.application.ObjectMappersSuite;
-import com.yahoo.bard.webservice.web.ApiRequest;
+import com.yahoo.bard.webservice.web.ApiRequestImpl;
 import com.yahoo.bard.webservice.web.CsvResponse;
 import com.yahoo.bard.webservice.web.JsonResponse;
 import com.yahoo.bard.webservice.web.util.ResponseFormat;
@@ -45,7 +45,7 @@ public abstract class EndpointServlet {
      * @return The updated response builder with the new link header added
      */
     protected <T> Response formatResponse(
-            ApiRequest apiRequest,
+            ApiRequestImpl apiRequest,
             Stream<T> rows,
             String jsonName,
             List<String> csvColumnNames

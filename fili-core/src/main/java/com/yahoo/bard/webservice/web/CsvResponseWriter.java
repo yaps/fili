@@ -35,7 +35,7 @@ public class CsvResponseWriter implements ResponseWriter {
 
     @Override
     public void write(
-            ApiRequest request,
+            ApiRequestImpl request,
             ResponseData responseData,
             OutputStream outputStream
     ) throws IOException {

@@ -29,7 +29,7 @@ public class FiliResponseWriter implements ResponseWriter {
 
     @Override
     public void write(
-            ApiRequest request,
+            ApiRequestImpl request,
             ResponseData responseData,
             OutputStream os
     ) throws IOException {

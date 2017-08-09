@@ -39,7 +39,7 @@ class ResponseWriterSelectorSpec extends Specification {
 
     static class DebugWriter implements ResponseWriter {
         @Override
-        void write(final ApiRequest request, final ResponseData responseData, final OutputStream os)
+        void write(final ApiRequestImpl request, final ResponseData responseData, final OutputStream os)
                 throws IOException {
 
         }

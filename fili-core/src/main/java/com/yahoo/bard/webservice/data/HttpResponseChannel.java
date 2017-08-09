@@ -6,7 +6,7 @@ import static com.yahoo.bard.webservice.web.handlers.workflow.DruidWorkflow.RESP
 
 import com.yahoo.bard.webservice.async.ResponseException;
 import com.yahoo.bard.webservice.logging.RequestLog;
-import com.yahoo.bard.webservice.web.ApiRequest;
+import com.yahoo.bard.webservice.web.ApiRequestImpl;
 import com.yahoo.bard.webservice.web.PreResponse;
 
 import org.slf4j.Logger;
@@ -26,7 +26,7 @@ public class HttpResponseChannel implements Observer<PreResponse> {
 
     private final AsyncResponse asyncResponse;
     private final HttpResponseMaker httpResponseMaker;
-    private final ApiRequest apiRequest;
+    private final ApiRequestImpl apiRequest;
 
     /**
      * Constructor.
@@ -38,7 +38,7 @@ public class HttpResponseChannel implements Observer<PreResponse> {
      */
     public HttpResponseChannel(
             AsyncResponse asyncResponse,
-            ApiRequest apiRequest,
+            ApiRequestImpl apiRequest,
             HttpResponseMaker httpResponseMaker
     ) {
         this.asyncResponse = asyncResponse;

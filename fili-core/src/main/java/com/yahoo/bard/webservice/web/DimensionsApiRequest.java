@@ -29,7 +29,7 @@ import javax.ws.rs.core.UriInfo;
  * Dimensions API Request. Such an API Request binds, validates, and models the parts of a request to the dimensions
  * endpoint.
  */
-public class DimensionsApiRequest extends ApiRequest {
+public class DimensionsApiRequest extends ApiRequestImpl {
     private static final Logger LOG = LoggerFactory.getLogger(DimensionsApiRequest.class);
     public static final String REQUEST_MAPPER_NAMESPACE = "dimensionApiRequestMapper";
 

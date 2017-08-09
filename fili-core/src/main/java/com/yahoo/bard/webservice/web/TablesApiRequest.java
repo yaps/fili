@@ -40,7 +40,7 @@ import javax.ws.rs.core.UriInfo;
 /**
  * Tables API Request. Such an API Request binds, validates, and models the parts of a request to the tables endpoint.
  */
-public class TablesApiRequest extends ApiRequest {
+public class TablesApiRequest extends ApiRequestImpl {
     private static final Logger LOG = LoggerFactory.getLogger(TablesApiRequest.class);
     public static final String REQUEST_MAPPER_NAMESPACE = "tablesApiRequestMapper";
 

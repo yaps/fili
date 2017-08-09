@@ -46,7 +46,7 @@ class DataApiRequestIntervalsSpec extends Specification {
 
     static final DateTimeZone originalTimeZone = DateTimeZone.default
 
-    class ConcreteApiRequest extends ApiRequest {}
+    class ConcreteApiRequest extends ApiRequestImpl {}
     ConcreteApiRequest concreteApiRequest = new ConcreteApiRequest()
 
     def setupSpec() {

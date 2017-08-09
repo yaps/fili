@@ -46,7 +46,7 @@ class ApiRequestSpec extends Specification {
 
     GranularityParser granularityParser = new StandardGranularityParser()
 
-    class ConcreteApiRequest extends ApiRequest {}
+    class ConcreteApiRequest extends ApiRequestImpl {}
 
     def setupSpec() {
         DateTimeZone.default = IntervalUtils.SYSTEM_ALIGNMENT_EPOCH.zone

@@ -23,7 +23,7 @@ import javax.ws.rs.core.UriInfo;
 /**
  * Jobs API Request. Such an API Request binds, validates, and models the parts of a request to the Jobs endpoint.
  */
-public class JobsApiRequest extends ApiRequest {
+public class JobsApiRequest extends ApiRequestImpl {
 
     public static final String REQUEST_MAPPER_NAMESPACE = "jobsApiRequestMapper";
     private static final Logger LOG = LoggerFactory.getLogger(JobsApiRequest.class);

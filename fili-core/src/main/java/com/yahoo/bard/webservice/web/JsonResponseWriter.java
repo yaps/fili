@@ -66,7 +66,7 @@ public class JsonResponseWriter extends JsonAndJsonApiResponseWriter {
      */
     @Override
     public void write(
-            ApiRequest request,
+            ApiRequestImpl request,
             ResponseData responseData,
             OutputStream os
     ) throws IOException {
