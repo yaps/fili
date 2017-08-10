@@ -3,7 +3,7 @@
 package com.yahoo.bard.webservice.web.security
 
 import com.yahoo.bard.webservice.data.config.ResourceDictionaries
-import com.yahoo.bard.webservice.web.ApiRequest
+import com.yahoo.bard.webservice.web.ApiRequestImpl
 import com.yahoo.bard.webservice.web.RequestMapper
 import com.yahoo.bard.webservice.web.RequestValidationException
 
@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response
 class DataApiRequestMapperUtilsSpec extends Specification {
 
     ResourceDictionaries dictionaries = Mock(ResourceDictionaries)
-    ApiRequest request = Mock(ApiRequest)
+    ApiRequestImpl request = Mock(ApiRequestImpl)
     ContainerRequestContext containerRequestContext = Mock(ContainerRequestContext)
 
     def "Identity only returns the identity"() {
@@ -35,11 +35,11 @@ class DataApiRequestMapperUtilsSpec extends Specification {
         given: "A mapper expecting an exception"
         RequestValidationException expected = new RequestValidationException(Response.Status.OK, "Test", "Test")
 
-        BiFunction<ApiRequest, ContainerRequestContext, RequestValidationException> exceptionBuilder = new
-                BiFunction<ApiRequest, ContainerRequestContext, RequestValidationException>() {
+        BiFunction<ApiRequestImpl, ContainerRequestContext, RequestValidationException> exceptionBuilder = new
+                BiFunction<ApiRequestImpl, ContainerRequestContext, RequestValidationException>() {
                     @Override
                     RequestValidationException apply(
-                            final ApiRequest apiRequest,
+                            final ApiRequestImpl apiRequest,
                             final ContainerRequestContext containerRequestContext
                     ) {
                         return expected

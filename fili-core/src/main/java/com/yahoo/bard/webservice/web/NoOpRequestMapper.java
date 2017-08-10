@@ -12,7 +12,7 @@ import javax.ws.rs.container.ContainerRequestContext;
  *
  * @param <T> Type of ApiRequest that this mapper maps
  */
-public class NoOpRequestMapper<T extends ApiRequest> extends RequestMapper<T> {
+public class NoOpRequestMapper<T extends ApiRequestImpl> extends RequestMapper<T> {
     /**
      * Constructor.
      *

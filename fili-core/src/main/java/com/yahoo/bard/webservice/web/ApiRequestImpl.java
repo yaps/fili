@@ -608,68 +608,30 @@ public class ApiRequestImpl implements ApiRequest {
         }
     }
 
-    /**
-     * Get the type of the requested response format.
-     *
-     * @return The format of the response for this API request.
-     */
     public ResponseFormatType getFormat() {
         return format;
     }
 
-    /**
-     * Get the requested pagination parameters.
-     *
-     * @return The pagination parameters for this API request
-     */
     public Optional<PaginationParameters> getPaginationParameters() {
         return paginationParameters;
     }
 
-    /**
-     * Get the uri info.
-     *
-     * @return The uri info of this API request
-     */
     public UriInfo getUriInfo() {
         return uriInfo;
     }
 
-    /**
-     * Get the pagination object associated with this request.
-     * This object has valid contents after a call to {@link #getPage}
-     *
-     * @return The pagination object.
-     */
     public Pagination<?> getPagination() {
         return pagination;
     }
 
-    /**
-     * Returns how long the user is willing to wait before a request should go asynchronous.
-     *
-     * @return The maximum number of milliseconds the request is allowed to take before going from synchronous to
-     * asynchronous
-     */
     public long getAsyncAfter() {
         return asyncAfter;
     }
 
-
-    /**
-     * Get the response builder associated with this request.
-     *
-     * @return The response builder.
-     */
     public Response.ResponseBuilder getBuilder() {
         return builder;
     }
 
-    /**
-     * Get the default pagination parameters for this type of API request.
-     *
-     * @return The uri info of this type of API request
-     */
     public PaginationParameters getDefaultPagination() {
         return DEFAULT_PAGINATION;
     }

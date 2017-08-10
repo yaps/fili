@@ -4,7 +4,6 @@ package com.yahoo.bard.webservice.web;
 
 import static com.yahoo.bard.webservice.web.ErrorMessageFormat.DATE_TIME_SORT_VALUE_INVALID;
 import static com.yahoo.bard.webservice.web.ErrorMessageFormat.DIMENSION_FIELDS_UNDEFINED;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.HAVING_METRICS_NOT_IN_QUERY_FORMAT;
 import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INCORRECT_METRIC_FILTER_FORMAT;
 import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INTEGER_INVALID;
 import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INVALID_METRIC_FILTER_CONDITION;
@@ -716,64 +715,6 @@ public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest
      */
     protected DateTime getCurrentDate(DateTime dateTime, TimeGrain timeGrain) {
         return timeGrain.roundFloor(dateTime);
-    }
-
-    /**
-     * Generates having objects based on the having query in the api request.
-     *
-     * @param havingQuery  Expects a URL having query String in the format:
-     * (dimension name)-(operation)[(value or comma separated values)]?
-     * @param logicalMetrics  The logical metrics used in this query
-     * @param metricDictionary  The metric dictionary to bind parsed metrics from the query
-     *
-     * @return Set of having objects.
-     *
-     * @throws BadApiRequestException if the having query string does not match required syntax.
-     */
-    protected Map<LogicalMetric, Set<ApiHaving>> generateHavings(
-            String havingQuery,
-            Set<LogicalMetric> logicalMetrics,
-            MetricDictionary metricDictionary
-    ) throws BadApiRequestException {
-        try (TimedPhase phase = RequestLog.startTiming("GeneratingHavings")) {
-            LOG.trace("Metric Dictionary: {}", metricDictionary);
-            // Havings are optional hence check if havings are requested.
-            if (havingQuery == null || "".equals(havingQuery)) {
-                return Collections.emptyMap();
-            }
-
-            List<String> unmatchedMetrics = new ArrayList<>();
-
-            // split on '],' to get list of havings
-            List<String> apiHavings = Arrays.asList(havingQuery.split(COMMA_AFTER_BRACKET_PATTERN));
-            Map<LogicalMetric, Set<ApiHaving>> generated = new LinkedHashMap<>();
-            for (String apiHaving : apiHavings) {
-                try {
-                    ApiHaving newHaving = new ApiHaving(apiHaving, metricDictionary);
-                    LogicalMetric metric = newHaving.getMetric();
-                    if (!logicalMetrics.contains(metric)) {
-                        unmatchedMetrics.add(metric.getName());
-                    } else {
-                        generated.putIfAbsent(metric, new LinkedHashSet<>());
-                        generated.get(metric).add(newHaving);
-                    }
-                } catch (BadHavingException havingException) {
-                    throw new BadApiRequestException(havingException.getMessage(), havingException);
-                }
-            }
-
-            if (!unmatchedMetrics.isEmpty()) {
-                LOG.debug(HAVING_METRICS_NOT_IN_QUERY_FORMAT.logFormat(unmatchedMetrics.toString()));
-                throw new BadApiRequestException(
-                        HAVING_METRICS_NOT_IN_QUERY_FORMAT.format(unmatchedMetrics.toString())
-                );
-
-            }
-
-            LOG.trace("Generated map of havings: {}", generated);
-
-            return generated;
-        }
     }
 
     /**
