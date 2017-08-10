@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 /**
  * Data API Request. Such an API Request binds, validates, and models the parts of a request to the data endpoint.
  */
-public interface DataApiRequest{
+public interface DataApiRequest {
     String REQUEST_MAPPER_NAMESPACE = "dataApiRequestMapper";
 
     /**

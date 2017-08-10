@@ -12,7 +12,7 @@ import com.yahoo.bard.webservice.data.dimension.Dimension;
 import com.yahoo.bard.webservice.data.dimension.DimensionField;
 import com.yahoo.bard.webservice.util.StreamUtils;
 import com.yahoo.bard.webservice.web.ApiFilter;
-import com.yahoo.bard.webservice.web.DataApiRequest;
+import com.yahoo.bard.webservice.web.DataApiRequestImpl;
 import com.yahoo.bard.webservice.web.FilterOperation;
 import com.yahoo.bard.webservice.web.RequestMapper;
 import com.yahoo.bard.webservice.web.RequestValidationException;
@@ -41,7 +41,7 @@ import javax.ws.rs.core.SecurityContext;
  * This mapper is intended to route based on user-category style roles such as routing super-user access to a
  * different mapping chain.
  */
-public class RoleDimensionApiFilterRequestMapper extends ChainingRequestMapper<DataApiRequest> {
+public class RoleDimensionApiFilterRequestMapper extends ChainingRequestMapper<DataApiRequestImpl> {
 
     private static final SystemConfig SYSTEM_CONFIG = SystemConfigProvider.getInstance();
 
@@ -73,7 +73,7 @@ public class RoleDimensionApiFilterRequestMapper extends ChainingRequestMapper<D
             final ResourceDictionaries resourceDictionaries,
             Dimension dimension,
             Map<String, Set<ApiFilter>> roleApiFilters,
-            RequestMapper<DataApiRequest> next
+            RequestMapper<DataApiRequestImpl> next
     ) {
         super(resourceDictionaries, next);
         this.dimension = dimension;
@@ -82,7 +82,7 @@ public class RoleDimensionApiFilterRequestMapper extends ChainingRequestMapper<D
     }
 
     @Override
-    protected DataApiRequest internalApply(DataApiRequest request, ContainerRequestContext context)
+    protected DataApiRequestImpl internalApply(DataApiRequestImpl request, ContainerRequestContext context)
             throws RequestValidationException {
         SecurityContext securityContext = context.getSecurityContext();
 

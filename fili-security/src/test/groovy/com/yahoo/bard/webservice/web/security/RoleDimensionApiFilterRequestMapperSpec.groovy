@@ -8,7 +8,7 @@ import com.yahoo.bard.webservice.data.config.ResourceDictionaries
 import com.yahoo.bard.webservice.data.dimension.Dimension
 import com.yahoo.bard.webservice.data.dimension.DimensionField
 import com.yahoo.bard.webservice.web.ApiFilter
-import com.yahoo.bard.webservice.web.DataApiRequest
+import com.yahoo.bard.webservice.web.DataApiRequestImpl
 import com.yahoo.bard.webservice.web.FilterOperation
 import com.yahoo.bard.webservice.web.RequestMapper
 import com.yahoo.bard.webservice.web.RequestValidationException
@@ -49,7 +49,7 @@ class RoleDimensionApiFilterRequestMapperSpec extends Specification {
     Set<ApiFilter> securitySetRoleB = [security3] as Set
 
     Map<String, Set<ApiFilter>> roles = [A: securitySetRoleA, B: securitySetRoleB]
-    RequestMapper<DataApiRequest> next = Mock(RequestMapper)
+    RequestMapper<DataApiRequestImpl> next = Mock(RequestMapper)
 
     ResourceDictionaries dictionaries = Mock(ResourceDictionaries)
 

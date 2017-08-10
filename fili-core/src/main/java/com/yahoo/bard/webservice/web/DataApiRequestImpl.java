@@ -66,7 +66,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
@@ -77,7 +76,7 @@ import javax.ws.rs.core.UriInfo;
 /**
  * Data API Request. Such an API Request binds, validates, and models the parts of a request to the data endpoint.
  */
-public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest{
+public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest {
     private static final Logger LOG = LoggerFactory.getLogger(DataApiRequestImpl.class);
     private static final String RATIO_METRIC_CATEGORY = "Ratios";
     private static final String DATE_TIME_STRING = "dateTime";

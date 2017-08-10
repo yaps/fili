@@ -81,7 +81,7 @@ import com.yahoo.bard.webservice.table.resolver.PhysicalTableResolver;
 import com.yahoo.bard.webservice.util.DefaultingDictionary;
 import com.yahoo.bard.webservice.util.SimplifiedIntervalList;
 import com.yahoo.bard.webservice.web.CsvResponseWriter;
-import com.yahoo.bard.webservice.web.DataApiRequest;
+import com.yahoo.bard.webservice.web.DataApiRequestImpl;
 import com.yahoo.bard.webservice.web.DimensionApiRequestMapper;
 import com.yahoo.bard.webservice.web.DimensionsApiRequest;
 import com.yahoo.bard.webservice.web.FiliResponseWriter;
@@ -360,9 +360,9 @@ public abstract class AbstractBinderFactory implements BinderFactory {
         )).named(TablesApiRequest.REQUEST_MAPPER_NAMESPACE).to(RequestMapper.class);
 
         binder.bind(requestMappers.getOrDefault(
-                DataApiRequest.REQUEST_MAPPER_NAMESPACE,
+                DataApiRequestImpl.REQUEST_MAPPER_NAMESPACE,
                 new NoOpRequestMapper(loader.getDictionaries())
-        )).named(DataApiRequest.REQUEST_MAPPER_NAMESPACE).to(RequestMapper.class);
+        )).named(DataApiRequestImpl.REQUEST_MAPPER_NAMESPACE).to(RequestMapper.class);
 
         binder.bind(requestMappers.getOrDefault(
                 JobsApiRequest.REQUEST_MAPPER_NAMESPACE,
