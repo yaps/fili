@@ -6,7 +6,7 @@ import com.yahoo.bard.webservice.data.dimension.Dimension;
 import com.yahoo.bard.webservice.druid.model.query.DruidAggregationQuery;
 import com.yahoo.bard.webservice.table.PhysicalTable;
 import com.yahoo.bard.webservice.web.ApiFilter;
-import com.yahoo.bard.webservice.web.DataApiRequest;
+import com.yahoo.bard.webservice.web.DataApiRequestImpl;
 
 import java.util.Collections;
 import java.util.Map;
@@ -39,7 +39,7 @@ public class DataSourceConstraint {
      * @param dataApiRequest  Api request containing the constraints information.
      * @param templateDruidQuery  Query containing metric constraint information.
      */
-    public DataSourceConstraint(DataApiRequest dataApiRequest, DruidAggregationQuery<?> templateDruidQuery) {
+    public DataSourceConstraint(DataApiRequestImpl dataApiRequest, DruidAggregationQuery<?> templateDruidQuery) {
         this.requestDimensions = Collections.unmodifiableSet(dataApiRequest.getDimensions());
         this.filterDimensions = Collections.unmodifiableSet(dataApiRequest.getFilterDimensions());
         this.metricDimensions = Collections.unmodifiableSet(templateDruidQuery.getMetricDimensions());

@@ -2,6 +2,8 @@
 // Licensed under the terms of the Apache license. Please see LICENSE.md file distributed with this work for terms.
 package com.yahoo.bard.webservice.web.handlers
 
+import com.yahoo.bard.webservice.web.DataApiRequestImpl
+
 import static com.yahoo.bard.webservice.data.time.DefaultTimeGrain.DAY
 
 import com.yahoo.bard.webservice.application.ObjectMappersSuite
@@ -12,7 +14,7 @@ import com.yahoo.bard.webservice.druid.client.SuccessCallback
 import com.yahoo.bard.webservice.druid.model.query.DruidAggregationQuery
 import com.yahoo.bard.webservice.druid.model.query.GroupByQuery
 import com.yahoo.bard.webservice.druid.model.query.WeightEvaluationQuery
-import com.yahoo.bard.webservice.web.DataApiRequest
+import com.yahoo.bard.webservice.web.DataApiRequestImpl
 import com.yahoo.bard.webservice.web.responseprocessors.ResponseProcessor
 import com.yahoo.bard.webservice.web.responseprocessors.WeightCheckResponseProcessor
 import com.yahoo.bard.webservice.web.util.QueryWeightUtil
@@ -36,7 +38,7 @@ class WeightCheckRequestHandlerSpec extends Specification {
     ObjectWriter writer
 
     RequestContext context
-    DataApiRequest request
+    DataApiRequestImpl request
     GroupByQuery groupByQuery
     ResponseProcessor response
 
@@ -48,7 +50,7 @@ class WeightCheckRequestHandlerSpec extends Specification {
         writer = Mock(ObjectWriter)
         mapper.writer() >> writer
         context = Mock(RequestContext)
-        request = Mock(DataApiRequest)
+        request = Mock(DataApiRequestImpl)
         groupByQuery = Mock(GroupByQuery)
         groupByQuery.getInnermostQuery() >> groupByQuery
         response = Mock(WeightCheckResponseProcessor)
@@ -102,7 +104,7 @@ class WeightCheckRequestHandlerSpec extends Specification {
             @Override
             public SuccessCallback buildSuccessCallback(
                     final RequestContext context,
-                    final DataApiRequest request,
+                    final DataApiRequestImpl request,
                     final DruidAggregationQuery<?> groupByQuery,
                     final ResponseProcessor response,
                     final long queryRowLimit
@@ -140,7 +142,7 @@ class WeightCheckRequestHandlerSpec extends Specification {
         ) {
             public SuccessCallback buildSuccessCallback(
                     final RequestContext context,
-                    final DataApiRequest request,
+                    final DataApiRequestImpl request,
                     final DruidAggregationQuery<?> groupByQuery,
                     final ResponseProcessor response,
                     final long queryRowLimit

@@ -55,7 +55,7 @@ class IntersectionReportingFlagOffSpec extends Specification {
 
     def "When INTERSECTION_REPORTING feature flag is off, query with valid unfiltered metrics returns the correct metrics from the metric dictionary"() {
         when: "The metric string contains valid unfiltered metrics"
-        new DataApiRequest().generateLogicalMetrics("met1,met2,met3", metricDict, dimensionDict, table)
+        new DataApiRequestImpl().generateLogicalMetrics("met1,met2,met3", metricDict, dimensionDict, table)
 
         then: "The metrics generated are the same ones as in the dictionary"
         ["met1", "met2", "met3" ].collect { metricDict.get(it) }
@@ -63,7 +63,7 @@ class IntersectionReportingFlagOffSpec extends Specification {
 
     def "When INTERSECTION_REPORTING feature flag is off, query with valid filtered metrics throws BadApiException"() {
         when:
-        new DataApiRequest().generateLogicalMetrics("met1(AND(app1,app2)),met2,met3", metricDict, dimensionDict, table)
+        new DataApiRequestImpl().generateLogicalMetrics("met1(AND(app1,app2)),met2,met3", metricDict, dimensionDict, table)
 
         then:
         Exception e = thrown(BadApiRequestException)

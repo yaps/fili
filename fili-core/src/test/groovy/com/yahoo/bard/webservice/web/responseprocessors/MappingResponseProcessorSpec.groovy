@@ -13,7 +13,7 @@ import com.yahoo.bard.webservice.druid.client.FailureCallback
 import com.yahoo.bard.webservice.druid.client.HttpErrorCallback
 import com.yahoo.bard.webservice.druid.model.query.DruidAggregationQuery
 import com.yahoo.bard.webservice.druid.model.query.GroupByQuery
-import com.yahoo.bard.webservice.web.DataApiRequest
+import com.yahoo.bard.webservice.web.DataApiRequestImpl
 import com.yahoo.bard.webservice.web.JsonResponseWriter
 import com.yahoo.bard.webservice.web.PreResponse
 import com.yahoo.bard.webservice.web.ResponseWriter
@@ -30,14 +30,14 @@ import javax.ws.rs.container.AsyncResponse
 class MappingResponseProcessorSpec extends Specification{
 
     GroupByQuery groupByQuery
-    DataApiRequest apiRequest
+    DataApiRequestImpl apiRequest
     ObjectMappersSuite objectMappers
     Subject<PreResponse, PreResponse> mappingResponseChannel
     ResponseWriter responseWriter
 
     def setup() {
         groupByQuery = Mock(GroupByQuery)
-        apiRequest = Mock(DataApiRequest)
+        apiRequest = Mock(DataApiRequestImpl)
         objectMappers = new ObjectMappersSuite()
         responseWriter = new JsonResponseWriter(objectMappers)
 

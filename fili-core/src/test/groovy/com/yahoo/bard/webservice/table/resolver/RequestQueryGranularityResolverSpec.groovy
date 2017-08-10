@@ -10,7 +10,7 @@ import static org.joda.time.DateTimeZone.UTC
 import com.yahoo.bard.webservice.data.QueryBuildingTestingResources
 import com.yahoo.bard.webservice.data.metric.TemplateDruidQuery
 import com.yahoo.bard.webservice.druid.model.query.Granularity
-import com.yahoo.bard.webservice.web.DataApiRequest
+import com.yahoo.bard.webservice.web.DataApiRequestImpl
 
 import org.joda.time.Interval
 
@@ -60,7 +60,7 @@ class RequestQueryGranularityResolverSpec extends Specification {
 
     @Unroll
     def "getCoarsestValidTimeGrain is '#minGrain' when API grain = '#apiGrain' and query grain = '#queryGrain'"() {
-        DataApiRequest apiRequest = Mock(DataApiRequest)
+        DataApiRequestImpl apiRequest = Mock(DataApiRequestImpl)
         apiRequest.granularity >> apiGrain.buildZonedTimeGrain(UTC)
         apiRequest.getTimeZone() >> UTC
         Granularity expected = minGrain.buildZonedTimeGrain(UTC)
@@ -81,7 +81,7 @@ class RequestQueryGranularityResolverSpec extends Specification {
     @Unroll
     def "getCoarsestValidTimeGrain: error thrown when API grain = '#apiGrain' and query grain = '#queryGrain'"() {
         setup:
-        DataApiRequest apiRequest = Mock(DataApiRequest)
+        DataApiRequestImpl apiRequest = Mock(DataApiRequestImpl)
         apiRequest.granularity >> apiGrain
         apiRequest.timeZone >> UTC
 

@@ -109,7 +109,7 @@ abstract class ResponseWriterSpec extends Specification {
 
     DateTime dateTime = new DateTime(1000L * 60 * 60 * 24 * 365 * 45)
     String formattedDateTime
-    DataApiRequest apiRequest = Mock(DataApiRequest)
+    DataApiRequestImpl apiRequest = Mock(DataApiRequestImpl)
     ResultSet resultSet
     ByteArrayOutputStream os = new ByteArrayOutputStream()
     DateTimeZone originalTimeZone = DateTimeZone.getDefault()

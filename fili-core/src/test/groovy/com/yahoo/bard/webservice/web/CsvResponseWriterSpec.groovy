@@ -34,7 +34,7 @@ class CsvResponseWriterSpec extends ResponseWriterSpec {
 
         Map<Dimension, Set<DimensionField>> defaultDimensionFieldsToShow = [:] as LinkedHashMap
 
-        DataApiRequest apiRequest = Mock(DataApiRequest) {
+        DataApiRequestImpl apiRequest = Mock(DataApiRequestImpl) {
             getLogicalMetrics() >>  testLogicalMetrics
         }
 

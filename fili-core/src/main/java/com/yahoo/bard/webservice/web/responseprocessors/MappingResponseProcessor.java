@@ -10,7 +10,7 @@ import com.yahoo.bard.webservice.druid.client.FailureCallback;
 import com.yahoo.bard.webservice.druid.client.HttpErrorCallback;
 import com.yahoo.bard.webservice.druid.model.query.DruidAggregationQuery;
 import com.yahoo.bard.webservice.async.ResponseException;
-import com.yahoo.bard.webservice.web.DataApiRequest;
+import com.yahoo.bard.webservice.web.DataApiRequestImpl;
 import com.yahoo.bard.webservice.web.ErrorMessageFormat;
 
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ import javax.ws.rs.core.Response.Status;
 public abstract class MappingResponseProcessor implements ResponseProcessor {
     private static final Logger LOG = LoggerFactory.getLogger(MappingResponseProcessor.class);
 
-    protected final DataApiRequest apiRequest;
+    protected final DataApiRequestImpl apiRequest;
     protected final ResponseContext responseContext;
     protected final MultivaluedHashMap<String, Serializable> headers;
 
@@ -46,7 +46,7 @@ public abstract class MappingResponseProcessor implements ResponseProcessor {
      * @param apiRequest  The request for which the response is being processed
      * @param objectMappers  Jackson mappers to use for processing JSON
      */
-    public MappingResponseProcessor(DataApiRequest apiRequest, ObjectMappersSuite objectMappers) {
+    public MappingResponseProcessor(DataApiRequestImpl apiRequest, ObjectMappersSuite objectMappers) {
         this.apiRequest = apiRequest;
         this.mappers = buildResultSetMapperList(apiRequest);
         this.headers = buildHeaderList();
@@ -61,7 +61,7 @@ public abstract class MappingResponseProcessor implements ResponseProcessor {
      *
      * @return a list of all mappers for this apirequest
      */
-    protected List<ResultSetMapper> buildResultSetMapperList(DataApiRequest apiRequest) {
+    protected List<ResultSetMapper> buildResultSetMapperList(DataApiRequestImpl apiRequest) {
         return apiRequest.getLogicalMetrics().stream()
                 .map(LogicalMetric::getCalculation)
                 .filter(Objects::nonNull)
@@ -159,7 +159,7 @@ public abstract class MappingResponseProcessor implements ResponseProcessor {
         return mappers;
     }
 
-    public DataApiRequest getDataApiRequest() {
+    public DataApiRequestImpl getDataApiRequest() {
         return apiRequest;
     }
 

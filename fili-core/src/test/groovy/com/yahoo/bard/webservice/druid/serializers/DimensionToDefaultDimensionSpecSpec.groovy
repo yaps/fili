@@ -14,7 +14,7 @@ import com.yahoo.bard.webservice.data.metric.mappers.NoOpResultSetMapper
 import com.yahoo.bard.webservice.data.volatility.DefaultingVolatileIntervalsService
 import com.yahoo.bard.webservice.druid.model.query.DruidAggregationQuery
 import com.yahoo.bard.webservice.table.resolver.DefaultPhysicalTableResolver
-import com.yahoo.bard.webservice.web.DataApiRequest
+import com.yahoo.bard.webservice.web.DataApiRequestImpl
 
 import com.fasterxml.jackson.databind.ObjectMapper
 
@@ -32,7 +32,7 @@ class DimensionToDefaultDimensionSpecSpec extends Specification {
     ObjectMapper objectMapper
     QueryBuildingTestingResources resources
     DruidQueryBuilder builder
-    DataApiRequest apiRequest
+    DataApiRequestImpl apiRequest
     DruidAggregationQuery<?> druidQuery
 
     def setup() {
@@ -40,7 +40,7 @@ class DimensionToDefaultDimensionSpecSpec extends Specification {
         resources = new QueryBuildingTestingResources()
         DefaultPhysicalTableResolver resolver = new DefaultPhysicalTableResolver(new PartialDataHandler(), new DefaultingVolatileIntervalsService())
         builder = new DruidQueryBuilder(resources.logicalDictionary, resolver)
-        apiRequest = Mock(DataApiRequest)
+        apiRequest = Mock(DataApiRequestImpl)
         LogicalMetric lm1 = new LogicalMetric(resources.simpleTemplateQuery, new NoOpResultSetMapper(), "lm1", null)
 
         apiRequest.getTable() >> resources.lt12

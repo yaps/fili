@@ -14,7 +14,7 @@ import com.yahoo.bard.webservice.data.metric.LogicalMetric
 import com.yahoo.bard.webservice.data.metric.MetricColumn
 import com.yahoo.bard.webservice.data.metric.mappers.ResultSetMapper
 import com.yahoo.bard.webservice.druid.model.query.DruidAggregationQuery
-import com.yahoo.bard.webservice.web.DataApiRequest
+import com.yahoo.bard.webservice.web.DataApiRequestImpl
 import com.yahoo.bard.webservice.web.JsonResponseWriter
 import com.yahoo.bard.webservice.web.PreResponse
 import com.yahoo.bard.webservice.web.ResponseFormatType
@@ -36,7 +36,7 @@ import javax.ws.rs.core.UriInfo
 class HttpResponseMakerSpec extends Specification {
     private static final ObjectMappersSuite MAPPERS = new ObjectMappersSuite()
 
-    DataApiRequest apiRequest
+    DataApiRequestImpl apiRequest
     HttpResponseChannel httpResponseChannel
     DruidResponseParser druidResponseParser
     UriInfo uriInfo
@@ -50,7 +50,7 @@ class HttpResponseMakerSpec extends Specification {
     ResponseWriter responseWriter
 
     def setup() {
-        apiRequest = Mock(DataApiRequest)
+        apiRequest = Mock(DataApiRequestImpl)
         druidResponseParser = Mock(DruidResponseParser)
         uriInfo = Mock(UriInfo)
         pathSegment = Mock(PathSegment)
@@ -123,7 +123,7 @@ class HttpResponseMakerSpec extends Specification {
         actual.getHeaders().get("Content-Type").toString() == "[application/json; charset=utf-8]"
     }
 
-    def "A CSV DataApiRequest builds a response with the CSV content type header set"() {
+    def "A CSV DataApiRequestImpl builds a response with the CSV content type header set"() {
 
         setup: "A ResultSetResponseProcessor"
         responseContext.put("headers", resultSetResponseProcessor.getHeaders())

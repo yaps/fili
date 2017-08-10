@@ -99,7 +99,7 @@ public class ResponseData {
     @Deprecated
     public ResponseData(
             ResultSet resultSet,
-            DataApiRequest apiRequest,
+            DataApiRequestImpl apiRequest,
             SimplifiedIntervalList missingIntervals,
             SimplifiedIntervalList volatileIntervals,
             Pagination pagination,

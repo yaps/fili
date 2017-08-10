@@ -41,7 +41,7 @@ class DataApiRequestSpec extends Specification {
 
     static final DateTimeZone orginalTimeZone = DateTimeZone.default
 
-    class ConcreteApiRequest extends ApiRequest {}
+    class ConcreteApiRequest extends ApiRequestImpl {}
 
     def setupSpec() {
         DateTimeZone.default = IntervalUtils.SYSTEM_ALIGNMENT_EPOCH.zone
@@ -87,14 +87,14 @@ class DataApiRequestSpec extends Specification {
 
         where:
         responseFormat          | expectedFormat
-        ResponseFormatType.JSON | new DataApiRequest().generateAcceptFormat(null)
-        ResponseFormatType.JSON | new DataApiRequest().generateAcceptFormat("json")
-        ResponseFormatType.CSV  | new DataApiRequest().generateAcceptFormat("csv")
+        ResponseFormatType.JSON | new DataApiRequestImpl().generateAcceptFormat(null)
+        ResponseFormatType.JSON | new DataApiRequestImpl().generateAcceptFormat("json")
+        ResponseFormatType.CSV  | new DataApiRequestImpl().generateAcceptFormat("csv")
     }
 
     def "check invalid parsing generateFormat"() {
         when:
-        new DataApiRequest().generateAcceptFormat("bad")
+        new DataApiRequestImpl().generateAcceptFormat("bad")
 
         then:
         thrown BadApiRequestException
@@ -102,7 +102,7 @@ class DataApiRequestSpec extends Specification {
 
     def "check parsing generateLogicalMetrics"() {
 
-        Set<LogicalMetric> logicalMetrics = new DataApiRequest().generateLogicalMetrics(
+        Set<LogicalMetric> logicalMetrics = new DataApiRequestImpl().generateLogicalMetrics(
                 "met1,met2,met3",
                 metricDict,
                 dimensionDict,
@@ -122,7 +122,7 @@ class DataApiRequestSpec extends Specification {
     @Unroll
     def "check valid granularity name #name parses to granularity #expected"() {
         expect:
-        new DataApiRequest().generateGranularity(name, granularityParser) == expected
+        new DataApiRequestImpl().generateGranularity(name, granularityParser) == expected
 
         where:
         name    | expected
@@ -136,7 +136,7 @@ class DataApiRequestSpec extends Specification {
         String expectedMessage = ErrorMessageFormat.UNKNOWN_GRANULARITY.format(timeGrainName)
 
         when:
-        new DataApiRequest().generateGranularity(timeGrainName, granularityParser)
+        new DataApiRequestImpl().generateGranularity(timeGrainName, granularityParser)
 
         then:
         Exception e = thrown(BadApiRequestException)
@@ -146,7 +146,7 @@ class DataApiRequestSpec extends Specification {
     def "check weekly granularity has the expected alignment description"() {
         setup:
         String expectedMessage = " Week must start on a Monday and end on a Monday."
-        Granularity<?> granularity = new DataApiRequest().generateGranularity("week", new StandardGranularityParser())
+        Granularity<?> granularity = new DataApiRequestImpl().generateGranularity("week", new StandardGranularityParser())
 
         expect:
         granularity.getAlignmentDescription() == expectedMessage

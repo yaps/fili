@@ -31,7 +31,7 @@ class ResponseWriterSelectorSpec extends Specification {
     Set<Column> columns
     ResponseData response
     DateTime dateTime = new DateTime(1000L * 60 * 60 * 24 * 365 * 45)
-    DataApiRequest apiRequest = Mock(DataApiRequest)
+    DataApiRequestImpl apiRequest = Mock(DataApiRequestImpl)
     ResultSet resultSet
     ByteArrayOutputStream os = new ByteArrayOutputStream()
     Pagination pagination

@@ -30,7 +30,7 @@ import com.yahoo.bard.webservice.table.TableIdentifier;
 import com.yahoo.bard.webservice.table.resolver.NoMatchFoundException;
 import com.yahoo.bard.webservice.table.resolver.PhysicalTableResolver;
 import com.yahoo.bard.webservice.table.resolver.QueryPlanningConstraint;
-import com.yahoo.bard.webservice.web.DataApiRequest;
+import com.yahoo.bard.webservice.web.DataApiRequestImpl;
 
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
@@ -76,7 +76,7 @@ public class DruidQueryBuilder {
      * @throws NoMatchFoundException if no PhysicalTable satisfies this request
      */
     public DruidAggregationQuery<?> buildQuery(
-            DataApiRequest request,
+            DataApiRequestImpl request,
             TemplateDruidQuery template
     ) throws DimensionRowNotFoundException, NoMatchFoundException {
 
@@ -388,7 +388,7 @@ public class DruidQueryBuilder {
      *
      * @return true if the optimization can be done, false if it can't
      */
-    protected boolean canOptimizeTopN(DataApiRequest apiRequest, TemplateDruidQuery templateDruidQuery) {
+    protected boolean canOptimizeTopN(DataApiRequestImpl apiRequest, TemplateDruidQuery templateDruidQuery) {
         return apiRequest.getDimensions().size() == 1 &&
                 apiRequest.getSorts().size() == 1 &&
                 !templateDruidQuery.isNested() &&
@@ -404,7 +404,7 @@ public class DruidQueryBuilder {
      *
      * @return true if the optimization can be done, false if it can't
      */
-    protected boolean canOptimizeTimeSeries(DataApiRequest apiRequest, TemplateDruidQuery templateDruidQuery) {
+    protected boolean canOptimizeTimeSeries(DataApiRequestImpl apiRequest, TemplateDruidQuery templateDruidQuery) {
         return apiRequest.getDimensions().isEmpty() &&
                 !templateDruidQuery.isNested() &&
                 apiRequest.getSorts().isEmpty() &&

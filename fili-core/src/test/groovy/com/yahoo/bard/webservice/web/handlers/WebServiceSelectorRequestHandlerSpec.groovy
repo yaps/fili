@@ -7,7 +7,7 @@ import com.yahoo.bard.webservice.druid.client.DruidServiceConfig
 import com.yahoo.bard.webservice.druid.client.DruidWebService
 import com.yahoo.bard.webservice.druid.model.query.GroupByQuery
 import com.yahoo.bard.webservice.druid.model.query.QueryContext
-import com.yahoo.bard.webservice.web.DataApiRequest
+import com.yahoo.bard.webservice.web.DataApiRequestImpl
 import com.yahoo.bard.webservice.web.DataApiRequestTypeIdentifier
 import com.yahoo.bard.webservice.web.responseprocessors.ResponseProcessor
 
@@ -32,7 +32,7 @@ class WebServiceSelectorRequestHandlerSpec extends Specification {
     RequestContext rc
     ResponseProcessor response = Mock(ResponseProcessor)
     MultivaluedMap<String, String> headerMap = new MultivaluedHashMap<>()
-    DataApiRequest request = Mock(DataApiRequest)
+    DataApiRequestImpl request = Mock(DataApiRequestImpl)
     QueryContext qc = new QueryContext([:])
     DruidServiceConfig serviceConfig = Mock(DruidServiceConfig)
 

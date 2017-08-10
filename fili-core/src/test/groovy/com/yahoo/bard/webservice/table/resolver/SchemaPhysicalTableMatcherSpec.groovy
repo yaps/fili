@@ -17,7 +17,7 @@ import com.yahoo.bard.webservice.data.metric.TemplateDruidQuery
 import com.yahoo.bard.webservice.metadata.DataSourceMetadataService
 import com.yahoo.bard.webservice.table.StrictPhysicalTable
 import com.yahoo.bard.webservice.table.PhysicalTable
-import com.yahoo.bard.webservice.web.DataApiRequest
+import com.yahoo.bard.webservice.web.DataApiRequestImpl
 
 import spock.lang.Specification
 
@@ -26,7 +26,7 @@ import spock.lang.Specification
  */
 class SchemaPhysicalTableMatcherSpec extends Specification {
     SchemaPhysicalTableMatcher schemaPhysicalTableMatcher
-    DataApiRequest request = Mock(DataApiRequest)
+    DataApiRequestImpl request = Mock(DataApiRequestImpl)
     TemplateDruidQuery query = Mock(TemplateDruidQuery)
 
     PhysicalTable physicalTable

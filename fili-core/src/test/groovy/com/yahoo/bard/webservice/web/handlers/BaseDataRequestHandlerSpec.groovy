@@ -3,7 +3,7 @@
 package com.yahoo.bard.webservice.web.handlers
 
 import com.yahoo.bard.webservice.druid.model.query.DruidAggregationQuery
-import com.yahoo.bard.webservice.web.DataApiRequest
+import com.yahoo.bard.webservice.web.DataApiRequestImpl
 import com.yahoo.bard.webservice.web.responseprocessors.ResponseProcessor
 
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -21,7 +21,7 @@ class BaseDataRequestHandlerSpec extends Specification {
         BaseDataRequestHandler handler = new BaseDataRequestHandler(mapper) {
             public boolean handleRequest(
                 RequestContext context,
-                final DataApiRequest request,
+                final DataApiRequestImpl request,
                 final DruidAggregationQuery<?> groupByQuery,
                 final ResponseProcessor response
             ) {

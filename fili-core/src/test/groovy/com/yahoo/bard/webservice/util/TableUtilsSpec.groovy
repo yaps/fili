@@ -4,7 +4,7 @@ package com.yahoo.bard.webservice.util
 
 import com.yahoo.bard.webservice.data.dimension.Dimension
 import com.yahoo.bard.webservice.druid.model.query.AbstractDruidAggregationQuery
-import com.yahoo.bard.webservice.web.DataApiRequest
+import com.yahoo.bard.webservice.web.DataApiRequestImpl
 
 import spock.lang.Shared
 import spock.lang.Specification
@@ -20,7 +20,7 @@ class TableUtilsSpec extends  Specification {
     @Shared Set<Dimension> ds1, ds12, ds13, ds123, dsNone
     @Shared String metric1, metric2, metric3
     AbstractDruidAggregationQuery<?> query = Mock(AbstractDruidAggregationQuery)
-    DataApiRequest request = Mock(DataApiRequest)
+    DataApiRequestImpl request = Mock(DataApiRequestImpl)
 
     def setupSpec() {
         d1 = Mock(Dimension)

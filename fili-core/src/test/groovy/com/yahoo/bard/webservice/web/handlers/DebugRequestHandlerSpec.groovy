@@ -4,7 +4,7 @@ package com.yahoo.bard.webservice.web.handlers
 
 import com.yahoo.bard.webservice.druid.client.HttpErrorCallback
 import com.yahoo.bard.webservice.druid.model.query.GroupByQuery
-import com.yahoo.bard.webservice.web.DataApiRequest
+import com.yahoo.bard.webservice.web.DataApiRequestImpl
 import com.yahoo.bard.webservice.web.ResponseFormatType
 import com.yahoo.bard.webservice.web.responseprocessors.ResponseProcessor
 
@@ -21,7 +21,7 @@ class DebugRequestHandlerSpec extends Specification {
     ObjectMapper mapper = Mock(ObjectMapper)
     ObjectWriter writer = Mock(ObjectWriter)
     RequestContext context = Mock(RequestContext)
-    DataApiRequest request = Mock(DataApiRequest)
+    DataApiRequestImpl request = Mock(DataApiRequestImpl)
     GroupByQuery groupByQuery = Mock(GroupByQuery)
     ResponseProcessor response = Mock(ResponseProcessor)
 

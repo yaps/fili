@@ -5,7 +5,7 @@ package com.yahoo.bard.webservice.util;
 import com.yahoo.bard.webservice.data.dimension.Dimension;
 import com.yahoo.bard.webservice.druid.model.query.DruidAggregationQuery;
 import com.yahoo.bard.webservice.table.PhysicalTable;
-import com.yahoo.bard.webservice.web.DataApiRequest;
+import com.yahoo.bard.webservice.web.DataApiRequestImpl;
 
 import java.util.Set;
 import java.util.function.Function;
@@ -33,7 +33,7 @@ public class TableUtils {
      */
     @Deprecated
     public static Set<String> getColumnNames(
-            DataApiRequest request,
+            DataApiRequestImpl request,
             DruidAggregationQuery<?> query,
             PhysicalTable table
     ) {
@@ -53,7 +53,7 @@ public class TableUtils {
      *
      * @return a set of strings representing schema column names
      */
-    public static Set<String> getColumnNames(DataApiRequest request, DruidAggregationQuery<?> query) {
+    public static Set<String> getColumnNames(DataApiRequestImpl request, DruidAggregationQuery<?> query) {
         return Stream.concat(
                 getDimensions(request, query).map(Dimension::getApiName),
                 query.getDependentFieldNames().stream()
@@ -68,7 +68,7 @@ public class TableUtils {
      *
      * @return a set of strings representing fact store column names
      */
-    public static Stream<Dimension> getDimensions(DataApiRequest request, DruidAggregationQuery<?> query) {
+    public static Stream<Dimension> getDimensions(DataApiRequestImpl request, DruidAggregationQuery<?> query) {
         return Stream.of(
                 request.getDimensions().stream(),
                 request.getFilterDimensions().stream(),

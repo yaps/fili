@@ -23,7 +23,7 @@ import com.yahoo.bard.webservice.druid.client.FailureCallback
 import com.yahoo.bard.webservice.druid.client.HttpErrorCallback
 import com.yahoo.bard.webservice.druid.model.query.DruidAggregationQuery
 import com.yahoo.bard.webservice.util.GroovyTestUtils
-import com.yahoo.bard.webservice.web.DataApiRequest
+import com.yahoo.bard.webservice.web.DataApiRequestImpl
 import com.yahoo.bard.webservice.web.PageNotFoundException
 import com.yahoo.bard.webservice.web.responseprocessors.LoggingContext
 import com.yahoo.bard.webservice.web.responseprocessors.MappingResponseProcessor
@@ -49,11 +49,11 @@ class PaginationMapperSpec extends Specification {
     private SearchProvider searchProvider
     private MappingResponseProcessor responseProcessor
     private UriBuilder uriBuilder
-    private DataApiRequest apiRequest
+    private DataApiRequestImpl apiRequest
     private ObjectMappersSuite objectMappers
 
     def setup(){
-        apiRequest = Mock(DataApiRequest)
+        apiRequest = Mock(DataApiRequestImpl)
         apiRequest.getLogicalMetrics() >> Collections.emptySet()
         objectMappers = new ObjectMappersSuite()
         store = MapStoreManager.getInstance("testStore")

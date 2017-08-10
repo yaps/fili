@@ -6,6 +6,7 @@ import com.yahoo.bard.webservice.config.SystemConfig;
 import com.yahoo.bard.webservice.config.SystemConfigProvider;
 import com.yahoo.bard.webservice.druid.model.query.DruidAggregationQuery;
 import com.yahoo.bard.webservice.web.DataApiRequest;
+import com.yahoo.bard.webservice.web.DataApiRequestImpl;
 import com.yahoo.bard.webservice.web.responseprocessors.DruidPartialDataResponseProcessor;
 import com.yahoo.bard.webservice.web.responseprocessors.ResponseProcessor;
 
@@ -37,7 +38,7 @@ public class DruidPartialDataRequestHandler implements DataRequestHandler {
     @Override
     public boolean handleRequest(
             RequestContext context,
-            DataApiRequest request,
+            DataApiRequestImpl request,
             DruidAggregationQuery<?> druidQuery,
             ResponseProcessor response
     ) {

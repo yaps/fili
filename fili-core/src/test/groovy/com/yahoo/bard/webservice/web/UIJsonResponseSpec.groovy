@@ -102,7 +102,7 @@ class UIJsonResponseSpec extends Specification {
 
 
         and: "An expected json serialization"
-        DataApiRequest apiRequest = Mock(DataApiRequest)
+        DataApiRequestImpl apiRequest = Mock(DataApiRequestImpl)
         apiRequest.getFormat()  >> ResponseFormatType.JSON
         String expectedJSON = """{
             "rows":[{
@@ -141,7 +141,7 @@ class UIJsonResponseSpec extends Specification {
         ResultSet resultSet = new ResultSet(newSchema, [r1, r1, r1])
 
         and: "An API Request"
-        DataApiRequest apiRequest = Mock(DataApiRequest)
+        DataApiRequestImpl apiRequest = Mock(DataApiRequestImpl)
         apiRequest.getFormat()  >> ResponseFormatType.JSON
         LinkedHashSet<String> apiMetricColumnNames = getApiMetricColumnNames()
 
