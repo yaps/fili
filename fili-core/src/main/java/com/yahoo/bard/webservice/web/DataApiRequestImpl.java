@@ -80,7 +80,6 @@ import javax.ws.rs.core.UriInfo;
 public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest{
     private static final Logger LOG = LoggerFactory.getLogger(DataApiRequestImpl.class);
     private static final String RATIO_METRIC_CATEGORY = "Ratios";
-    public static final String REQUEST_MAPPER_NAMESPACE = "dataApiRequestMapper";
     private static final String DATE_TIME_STRING = "dateTime";
 
     private final LogicalTable table;

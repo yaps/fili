@@ -5,7 +5,7 @@ package com.yahoo.bard.webservice.web.handlers;
 import com.yahoo.bard.webservice.application.MetricRegistryFactory;
 import com.yahoo.bard.webservice.druid.client.DruidWebService;
 import com.yahoo.bard.webservice.druid.model.query.DruidAggregationQuery;
-import com.yahoo.bard.webservice.web.DataApiRequest;
+import com.yahoo.bard.webservice.web.DataApiRequestImpl;
 import com.yahoo.bard.webservice.web.DataApiRequestTypeIdentifier;
 
 import com.codahale.metrics.Meter;
@@ -41,7 +41,7 @@ public class DefaultWebServiceHandlerSelector implements WebServiceHandlerSelect
     @Override
     public WebServiceHandler select(
             DruidAggregationQuery<?> druidQuery,
-            DataApiRequest request,
+            DataApiRequestImpl request,
             RequestContext context
     ) {
         QUERY_REQUEST_TOTAL.mark();
