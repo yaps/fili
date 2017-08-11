@@ -7,7 +7,7 @@ import com.yahoo.bard.webservice.data.config.ResourceDictionaries;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.container.ContainerRequestContext;
 
-/**clear
+/**
  * Default RequestMapper implementation.
  *
  * @param <T> Type of ApiRequest that this mapper maps

@@ -10,7 +10,11 @@ import com.yahoo.bard.webservice.data.metric.LogicalMetric
 import com.yahoo.bard.webservice.data.metric.MetricColumn
 import com.yahoo.bard.webservice.data.metric.mappers.ResultSetMapper
 import com.yahoo.bard.webservice.druid.model.query.DruidAggregationQuery
-import com.yahoo.bard.webservice.web.*
+import com.yahoo.bard.webservice.web.DataApiRequestImpl
+import com.yahoo.bard.webservice.web.JsonResponseWriter
+import com.yahoo.bard.webservice.web.PreResponse
+import com.yahoo.bard.webservice.web.ResponseFormatType
+import com.yahoo.bard.webservice.web.ResponseWriter
 import com.yahoo.bard.webservice.web.responseprocessors.ResponseContext
 import com.yahoo.bard.webservice.web.responseprocessors.ResultSetResponseProcessor
 import rx.subjects.PublishSubject
@@ -18,7 +22,11 @@ import rx.subjects.Subject
 import spock.lang.Specification
 
 import javax.ws.rs.container.AsyncResponse
-import javax.ws.rs.core.*
+import javax.ws.rs.core.HttpHeaders
+import javax.ws.rs.core.MultivaluedMap
+import javax.ws.rs.core.PathSegment
+import javax.ws.rs.core.Response
+import javax.ws.rs.core.UriInfo
 
 import static com.yahoo.bard.webservice.data.time.DefaultTimeGrain.DAY
 import static com.yahoo.bard.webservice.web.responseprocessors.ResponseContextKeys.API_METRIC_COLUMN_NAMES

@@ -6,8 +6,12 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.collect.Sets
 import com.yahoo.bard.webservice.application.ObjectMappersSuite
-import com.yahoo.bard.webservice.data.*
 import com.yahoo.bard.webservice.data.dimension.BardDimensionField
+import com.yahoo.bard.webservice.data.DruidResponseParser
+import com.yahoo.bard.webservice.data.HttpResponseChannel
+import com.yahoo.bard.webservice.data.ResultSet
+import com.yahoo.bard.webservice.data.ResultSetSchema
+import com.yahoo.bard.webservice.data.HttpResponseMaker
 import com.yahoo.bard.webservice.data.dimension.Dimension
 import com.yahoo.bard.webservice.data.dimension.DimensionColumn
 import com.yahoo.bard.webservice.data.dimension.DimensionDictionary
