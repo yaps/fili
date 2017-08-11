@@ -3,19 +3,18 @@
 package com.yahoo.bard.webservice.web.endpoints;
 
 import com.yahoo.bard.webservice.application.ObjectMappersSuite;
-import com.yahoo.bard.webservice.web.ApiRequestImpl;
+import com.yahoo.bard.webservice.web.ApiRequest;
 import com.yahoo.bard.webservice.web.CsvResponse;
 import com.yahoo.bard.webservice.web.JsonResponse;
 import com.yahoo.bard.webservice.web.util.ResponseFormat;
-
-import java.util.List;
-import java.util.stream.Stream;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Abstract class making available the common code between the servlets that serve the endpoints.
@@ -45,7 +44,7 @@ public abstract class EndpointServlet {
      * @return The updated response builder with the new link header added
      */
     protected <T> Response formatResponse(
-            ApiRequestImpl apiRequest,
+            ApiRequest apiRequest,
             Stream<T> rows,
             String jsonName,
             List<String> csvColumnNames

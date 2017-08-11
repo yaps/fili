@@ -4,7 +4,7 @@ package com.yahoo.bard.webservice.web.security
 
 import com.yahoo.bard.webservice.config.SystemConfigProvider
 import com.yahoo.bard.webservice.data.config.ResourceDictionaries
-import com.yahoo.bard.webservice.web.ApiRequestImpl
+import com.yahoo.bard.webservice.web.ApiRequest
 import com.yahoo.bard.webservice.web.RequestMapper
 
 import spock.lang.Specification
@@ -15,15 +15,15 @@ import javax.ws.rs.core.SecurityContext
 
 class RoleBasedRoutingRequestMapperSpec extends Specification {
 
-    LinkedHashMap<String, RequestMapper<ApiRequestImpl>> prioritizedRoleBasedMappers;
-    RequestMapper<ApiRequestImpl> mapperA = Mock(RequestMapper)
-    RequestMapper<ApiRequestImpl> mapperB = Mock(RequestMapper)
-    RequestMapper<ApiRequestImpl> mapperC = Mock(RequestMapper)
+    LinkedHashMap<String, RequestMapper<ApiRequest>> prioritizedRoleBasedMappers;
+    RequestMapper<ApiRequest> mapperA = Mock(RequestMapper)
+    RequestMapper<ApiRequest> mapperB = Mock(RequestMapper)
+    RequestMapper<ApiRequest> mapperC = Mock(RequestMapper)
 
     ContainerRequestContext containerRequestContext = Mock(ContainerRequestContext)
     SecurityContext securityContext = Mock(SecurityContext)
     RoleBasedRoutingRequestMapper mapper
-    Map<String, RequestMapper<ApiRequestImpl>> mappers = [a: mapperA, b: mapperB, c:mapperC]
+    Map<String, RequestMapper<ApiRequest>> mappers = [a: mapperA, b: mapperB, c:mapperC]
 
     def setup() {
         mapper = new RoleBasedRoutingRequestMapper(Mock(ResourceDictionaries), prioritizedRoleBasedMappers, mapperC)
@@ -45,7 +45,7 @@ class RoleBasedRoutingRequestMapperSpec extends Specification {
         setup:
         System.out.println(SystemConfigProvider.getInstance().getPackageVariableName("default_per_page"))
 
-        ApiRequestImpl apiRequest = Mock(ApiRequestImpl)
+        ApiRequest apiRequest = Mock(ApiRequest)
         setupRoles(roles)
         RequestMapper delegate = prioritizedRoleBasedMappers[nextMapper]
 

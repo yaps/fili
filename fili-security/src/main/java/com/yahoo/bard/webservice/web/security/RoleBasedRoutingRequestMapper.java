@@ -3,22 +3,21 @@
 package com.yahoo.bard.webservice.web.security;
 
 import com.yahoo.bard.webservice.data.config.ResourceDictionaries;
-import com.yahoo.bard.webservice.web.ApiRequestImpl;
+import com.yahoo.bard.webservice.web.ApiRequest;
 import com.yahoo.bard.webservice.web.RequestMapper;
 import com.yahoo.bard.webservice.web.RequestValidationException;
-
-import java.util.LinkedHashMap;
 
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.SecurityContext;
+import java.util.LinkedHashMap;
 
 /**
  * A RequestMapper that delegates to the first request mapper in a list which the user has a supporting role for.
  *
  * @param <T> Type of API Request this RequestMapper will work on
  */
-public class RoleBasedRoutingRequestMapper<T extends ApiRequestImpl> extends RequestMapper<T> {
+public class RoleBasedRoutingRequestMapper<T extends ApiRequest> extends RequestMapper<T> {
 
     private final LinkedHashMap<String, RequestMapper<T>> prioritizedRoleBasedMappers;
     private final RequestMapper<T> defaultMapper;

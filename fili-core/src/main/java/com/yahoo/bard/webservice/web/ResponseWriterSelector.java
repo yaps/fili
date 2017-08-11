@@ -21,5 +21,5 @@ public interface ResponseWriterSelector {
      *
      * @return  Writer of given format type
      */
-    Optional<ResponseWriter> select(ApiRequestImpl request);
+    Optional<ResponseWriter> select(ApiRequest request);
 }

@@ -2,20 +2,18 @@
 // Licensed under the terms of the Apache license. Please see LICENSE.md file distributed with this work for terms.
 package com.yahoo.bard.webservice.data;
 
-import static com.yahoo.bard.webservice.web.handlers.workflow.DruidWorkflow.RESPONSE_WORKFLOW_TIMER;
-
 import com.yahoo.bard.webservice.async.ResponseException;
 import com.yahoo.bard.webservice.logging.RequestLog;
-import com.yahoo.bard.webservice.web.ApiRequestImpl;
+import com.yahoo.bard.webservice.web.ApiRequest;
 import com.yahoo.bard.webservice.web.PreResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import rx.Observer;
 
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.core.Response;
+
+import static com.yahoo.bard.webservice.web.handlers.workflow.DruidWorkflow.RESPONSE_WORKFLOW_TIMER;
 
 /**
  * Converts preResponse/errorResponse into HTTP Responses, and ships them immediately to the client.
@@ -26,7 +24,7 @@ public class HttpResponseChannel implements Observer<PreResponse> {
 
     private final AsyncResponse asyncResponse;
     private final HttpResponseMaker httpResponseMaker;
-    private final ApiRequestImpl apiRequest;
+    private final ApiRequest apiRequest;
 
     /**
      * Constructor.
@@ -38,7 +36,7 @@ public class HttpResponseChannel implements Observer<PreResponse> {
      */
     public HttpResponseChannel(
             AsyncResponse asyncResponse,
-            ApiRequestImpl apiRequest,
+            ApiRequest apiRequest,
             HttpResponseMaker httpResponseMaker
     ) {
         this.asyncResponse = asyncResponse;

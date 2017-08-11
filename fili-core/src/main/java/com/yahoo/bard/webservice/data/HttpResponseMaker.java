@@ -2,35 +2,16 @@
 // Licensed under the terms of the Apache license. Please see LICENSE.md file distributed with this work for terms.
 package com.yahoo.bard.webservice.data;
 
-import static com.yahoo.bard.webservice.web.handlers.PartialDataRequestHandler.getPartialIntervalsWithDefault;
-import static com.yahoo.bard.webservice.web.handlers.VolatileDataRequestHandler.getVolatileIntervalsWithDefault;
-import static com.yahoo.bard.webservice.web.responseprocessors.ResponseContextKeys.API_METRIC_COLUMN_NAMES;
-import static com.yahoo.bard.webservice.web.responseprocessors.ResponseContextKeys.HEADERS;
-import static com.yahoo.bard.webservice.web.responseprocessors.ResponseContextKeys.PAGINATION_CONTEXT_KEY;
-import static com.yahoo.bard.webservice.web.responseprocessors.ResponseContextKeys.PAGINATION_LINKS_CONTEXT_KEY;
-import static com.yahoo.bard.webservice.web.responseprocessors.ResponseContextKeys.REQUESTED_API_DIMENSION_FIELDS;
-
 import com.yahoo.bard.webservice.application.ObjectMappersSuite;
 import com.yahoo.bard.webservice.data.dimension.Dimension;
 import com.yahoo.bard.webservice.data.dimension.DimensionDictionary;
 import com.yahoo.bard.webservice.data.dimension.DimensionField;
 import com.yahoo.bard.webservice.druid.model.query.DruidQuery;
 import com.yahoo.bard.webservice.util.Pagination;
-import com.yahoo.bard.webservice.web.ApiRequestImpl;
-import com.yahoo.bard.webservice.web.PreResponse;
-import com.yahoo.bard.webservice.web.ResponseData;
-import com.yahoo.bard.webservice.web.ResponseFormatType;
-import com.yahoo.bard.webservice.web.ResponseWriter;
+import com.yahoo.bard.webservice.web.*;
 import com.yahoo.bard.webservice.web.handlers.RequestHandlerUtils;
 import com.yahoo.bard.webservice.web.responseprocessors.ResponseContext;
 import com.yahoo.bard.webservice.web.util.ResponseFormat;
-
-import java.net.URI;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -39,6 +20,16 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
+import java.net.URI;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.yahoo.bard.webservice.web.handlers.PartialDataRequestHandler.getPartialIntervalsWithDefault;
+import static com.yahoo.bard.webservice.web.handlers.VolatileDataRequestHandler.getVolatileIntervalsWithDefault;
+import static com.yahoo.bard.webservice.web.responseprocessors.ResponseContextKeys.*;
 
 /**
  * Translates a PreResponse into an HTTP Response containing the results of a query.
@@ -77,7 +68,7 @@ public class HttpResponseMaker {
      */
     public javax.ws.rs.core.Response buildResponse(
             PreResponse preResponse,
-            ApiRequestImpl apiRequest
+            ApiRequest apiRequest
     ) {
         ResponseBuilder rspBuilder = createResponseBuilder(
                 preResponse.getResultSet(),
@@ -109,7 +100,7 @@ public class HttpResponseMaker {
     private ResponseBuilder createResponseBuilder(
             ResultSet resultSet,
             ResponseContext responseContext,
-            ApiRequestImpl apiRequest
+            ApiRequest apiRequest
     ) {
         @SuppressWarnings("unchecked")
         ResponseFormatType responseFormatType = apiRequest.getFormat();

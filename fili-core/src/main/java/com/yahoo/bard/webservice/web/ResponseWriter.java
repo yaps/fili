@@ -21,5 +21,5 @@ public interface ResponseWriter {
      *
      * @throws IOException if a problem is encountered writing to the OutputStream
      */
-    void write(ApiRequestImpl request, ResponseData responseData, OutputStream os) throws IOException;
+    void write(ApiRequest request, ResponseData responseData, OutputStream os) throws IOException;
 }
