@@ -3,13 +3,12 @@
 package com.yahoo.bard.webservice.web.security;
 
 import com.yahoo.bard.webservice.data.config.ResourceDictionaries;
-import com.yahoo.bard.webservice.web.ApiRequestImpl;
+import com.yahoo.bard.webservice.web.ApiRequest;
 import com.yahoo.bard.webservice.web.RequestMapper;
 import com.yahoo.bard.webservice.web.RequestValidationException;
 
-import java.util.function.BiFunction;
-
 import javax.ws.rs.container.ContainerRequestContext;
+import java.util.function.BiFunction;
 
 /**
  * A set of methods for generating utility mappers for ApiRequestMapping chains.
@@ -26,7 +25,7 @@ public class DataApiRequestMapperUtils {
     public static RequestMapper identityMapper(ResourceDictionaries resourceDictionaries) {
         return new RequestMapper(resourceDictionaries) {
             @Override
-            public ApiRequestImpl apply(final ApiRequestImpl request, final ContainerRequestContext context)
+            public ApiRequest apply(final ApiRequest request, final ContainerRequestContext context)
                     throws RequestValidationException {
                 return request;
             };
@@ -45,11 +44,11 @@ public class DataApiRequestMapperUtils {
      */
     public static RequestMapper validationExceptionMapper(
             ResourceDictionaries resourceDictionaries,
-            BiFunction<ApiRequestImpl, ContainerRequestContext, RequestValidationException> exceptionSource
+            BiFunction<ApiRequest, ContainerRequestContext, RequestValidationException> exceptionSource
     ) {
         return new RequestMapper(resourceDictionaries) {
             @Override
-            public ApiRequestImpl apply(final ApiRequestImpl request, final ContainerRequestContext context)
+            public ApiRequest apply(final ApiRequest request, final ContainerRequestContext context)
                     throws RequestValidationException {
                 throw exceptionSource.apply(request, context);
             };
