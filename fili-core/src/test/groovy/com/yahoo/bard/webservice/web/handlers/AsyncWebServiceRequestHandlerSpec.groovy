@@ -5,7 +5,7 @@ package com.yahoo.bard.webservice.web.handlers
 import com.yahoo.bard.webservice.druid.client.DruidWebService
 import com.yahoo.bard.webservice.druid.client.SuccessCallback
 import com.yahoo.bard.webservice.druid.model.query.GroupByQuery
-import com.yahoo.bard.webservice.web.DataApiRequestImpl
+import com.yahoo.bard.webservice.web.DataApiRequest
 import com.yahoo.bard.webservice.web.responseprocessors.ResponseProcessor
 
 import com.fasterxml.jackson.databind.JsonNode
@@ -22,7 +22,7 @@ class AsyncWebServiceRequestHandlerSpec extends Specification {
         setup:
         DruidWebService dws = Mock(DruidWebService)
         RequestContext rc = Mock(RequestContext)
-        DataApiRequestImpl request = Mock(DataApiRequestImpl)
+        DataApiRequest request = Mock(DataApiRequest)
         GroupByQuery groupByQuery = Mock(GroupByQuery)
         ResponseProcessor response = Mock(ResponseProcessor)
         JsonNode rootNode = Mock(JsonNode)

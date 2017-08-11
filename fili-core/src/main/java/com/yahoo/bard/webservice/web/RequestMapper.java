@@ -12,7 +12,7 @@ import javax.ws.rs.container.ContainerRequestContext;
  *
  * @param <T> Type of API Request this RequestMapper will work on
  */
-public abstract class RequestMapper<T extends ApiRequestImpl> {
+public abstract class RequestMapper<T extends ApiRequest> {
     private final ResourceDictionaries resourceDictionaries;
 
     /**

@@ -10,7 +10,7 @@ import com.yahoo.bard.webservice.druid.model.query.TimeSeriesQuery
 import com.yahoo.bard.webservice.druid.model.query.TopNQuery
 import com.yahoo.bard.webservice.metadata.QuerySigningService
 import com.yahoo.bard.webservice.metadata.SegmentIntervalsHashIdGenerator
-import com.yahoo.bard.webservice.web.DataApiRequestImpl
+import com.yahoo.bard.webservice.web.DataApiRequest
 import com.yahoo.bard.webservice.web.RequestUtils
 import com.yahoo.bard.webservice.web.responseprocessors.CacheV2ResponseProcessor
 import com.yahoo.bard.webservice.web.responseprocessors.ResponseProcessor
@@ -38,7 +38,7 @@ class CacheV2RequestHandlerSpec extends Specification {
 
     TupleDataCache<String, Long, String> dataCache = Mock(TupleDataCache)
 
-    DataApiRequestImpl apiRequest = Mock(DataApiRequestImpl)
+    DataApiRequest apiRequest = Mock(DataApiRequest)
     ResponseProcessor response = Mock(ResponseProcessor)
     JsonNode json = new JsonNodeFactory().arrayNode()
 

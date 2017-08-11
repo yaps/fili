@@ -16,7 +16,7 @@ import com.yahoo.bard.webservice.druid.client.HttpErrorCallback
 import com.yahoo.bard.webservice.druid.model.query.GroupByQuery
 import com.yahoo.bard.webservice.metadata.QuerySigningService
 import com.yahoo.bard.webservice.util.SimplifiedIntervalList
-import com.yahoo.bard.webservice.web.DataApiRequestImpl
+import com.yahoo.bard.webservice.web.DataApiRequest
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -39,7 +39,7 @@ class CacheV2ResponseProcessorSpec extends Specification {
     Integer segmentId
     TupleDataCache<String, Integer, String> dataCache = Mock(TupleDataCache)
 
-    DataApiRequestImpl apiRequest = Mock(DataApiRequestImpl)
+    DataApiRequest apiRequest = Mock(DataApiRequest)
     GroupByQuery groupByQuery = Mock(GroupByQuery)
     List<ResultSetMapper> mappers = new ArrayList<ResultSetMapper>()
     @Shared SimplifiedIntervalList intervals = new SimplifiedIntervalList()

@@ -7,7 +7,7 @@ import static com.yahoo.bard.webservice.web.ErrorMessageFormat.QUERY_GRAIN_NOT_S
 import com.yahoo.bard.webservice.data.metric.TemplateDruidQuery;
 import com.yahoo.bard.webservice.data.time.ZonelessTimeGrain;
 import com.yahoo.bard.webservice.druid.model.query.Granularity;
-import com.yahoo.bard.webservice.web.DataApiRequestImpl;
+import com.yahoo.bard.webservice.web.DataApiRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,7 @@ import java.util.function.BiFunction;
  * A function to take an ApiRequest and TemplateDruidQuery and determine a Granularity which must be satisfied by a
  * fact source in order to satisfy this request.
  */
-public class RequestQueryGranularityResolver implements BiFunction<DataApiRequestImpl, TemplateDruidQuery,
+public class RequestQueryGranularityResolver implements BiFunction<DataApiRequest, TemplateDruidQuery,
         Granularity> {
 
     private static final Logger LOG = LoggerFactory.getLogger(RequestQueryGranularityResolver.class);
@@ -34,7 +34,7 @@ public class RequestQueryGranularityResolver implements BiFunction<DataApiReques
      *
      * @return The coarsest valid table grain to satisfy the query
      */
-    public Granularity resolveAcceptingGrain(DataApiRequestImpl apiRequest, TemplateDruidQuery query) {
+    public Granularity resolveAcceptingGrain(DataApiRequest apiRequest, TemplateDruidQuery query) {
         // Gather any specified time grains
         Granularity requestGranularity = apiRequest.getGranularity();
         ZonelessTimeGrain queryGrain = query.getInnermostQuery().getTimeGrain();
@@ -53,7 +53,7 @@ public class RequestQueryGranularityResolver implements BiFunction<DataApiReques
     }
 
     @Override
-    public Granularity apply(DataApiRequestImpl request, TemplateDruidQuery templateDruidQuery) {
+    public Granularity apply(DataApiRequest request, TemplateDruidQuery templateDruidQuery) {
         return resolveAcceptingGrain(request, templateDruidQuery);
     }
 }

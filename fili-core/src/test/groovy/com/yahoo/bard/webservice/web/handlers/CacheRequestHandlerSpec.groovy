@@ -7,7 +7,7 @@ import com.yahoo.bard.webservice.data.cache.DataCache
 import com.yahoo.bard.webservice.druid.model.query.GroupByQuery
 import com.yahoo.bard.webservice.druid.model.query.TimeSeriesQuery
 import com.yahoo.bard.webservice.druid.model.query.TopNQuery
-import com.yahoo.bard.webservice.web.DataApiRequestImpl
+import com.yahoo.bard.webservice.web.DataApiRequest
 import com.yahoo.bard.webservice.web.RequestUtils
 import com.yahoo.bard.webservice.web.responseprocessors.CachingResponseProcessor
 import com.yahoo.bard.webservice.web.responseprocessors.ResponseProcessor
@@ -35,7 +35,7 @@ class CacheRequestHandlerSpec extends Specification {
 
     DataCache<String> dataCache = Mock(DataCache)
 
-    DataApiRequestImpl apiRequest = Mock(DataApiRequestImpl)
+    DataApiRequest apiRequest = Mock(DataApiRequest)
     ResponseProcessor response = Mock(ResponseProcessor)
     JsonNode json = new JsonNodeFactory().arrayNode()
 

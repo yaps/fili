@@ -7,7 +7,7 @@ import com.yahoo.bard.webservice.data.QueryBuildingTestingResources
 import com.yahoo.bard.webservice.data.metric.TemplateDruidQuery
 import com.yahoo.bard.webservice.data.time.DefaultTimeGrain
 import com.yahoo.bard.webservice.druid.model.query.Granularity
-import com.yahoo.bard.webservice.web.DataApiRequestImpl
+import com.yahoo.bard.webservice.web.DataApiRequest
 
 import org.joda.time.DateTime
 import org.joda.time.Interval
@@ -35,7 +35,7 @@ class VolatileTimeComparatorSpec extends Specification {
         ])
 
         and: "The api request of interest"
-        DataApiRequestImpl request = initializeApiRequest(
+        DataApiRequest request = initializeApiRequest(
                 [new Interval(new DateTime("2014-01-01"), new DateTime("2017-01-01"))],
                 DefaultTimeGrain.YEAR
         )
@@ -89,7 +89,7 @@ class VolatileTimeComparatorSpec extends Specification {
         ])
 
         and: "The api request of interest"
-        DataApiRequestImpl request = initializeApiRequest(
+        DataApiRequest request = initializeApiRequest(
                 [new Interval(new DateTime("2007-01-01"), new DateTime("2007-01-08"))],
                 requestGranularity
         )
@@ -128,8 +128,8 @@ class VolatileTimeComparatorSpec extends Specification {
         "2013/2014"             | "2007-01-07/2007-01-08" | DefaultTimeGrain.WEEK || 0
     }
 
-    private DataApiRequestImpl initializeApiRequest(List<Interval> intervals, Granularity granularity) {
-        Stub(DataApiRequestImpl) {
+    private DataApiRequest initializeApiRequest(List<Interval> intervals, Granularity granularity) {
+        Stub(DataApiRequest) {
             getIntervals() >> intervals
             getDimensions() >> [resources.d1]
             getFilterDimensions() >> []

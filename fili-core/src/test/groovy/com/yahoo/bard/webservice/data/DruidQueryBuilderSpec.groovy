@@ -2,13 +2,6 @@
 // Licensed under the terms of the Apache license. Please see LICENSE.md file distributed with this work for terms.
 package com.yahoo.bard.webservice.data
 
-import static com.yahoo.bard.webservice.config.BardFeatureFlag.TOP_N
-import static com.yahoo.bard.webservice.data.time.DefaultTimeGrain.DAY
-import static com.yahoo.bard.webservice.data.time.DefaultTimeGrain.HOUR
-import static com.yahoo.bard.webservice.data.time.DefaultTimeGrain.WEEK
-import static com.yahoo.bard.webservice.data.time.DefaultTimeGrain.YEAR
-import static org.joda.time.DateTimeZone.UTC
-
 import com.yahoo.bard.webservice.data.filterbuilders.DefaultDruidFilterBuilder
 import com.yahoo.bard.webservice.data.filterbuilders.DruidFilterBuilder
 import com.yahoo.bard.webservice.data.metric.LogicalMetric
@@ -31,20 +24,20 @@ import com.yahoo.bard.webservice.druid.model.query.TopNQuery
 import com.yahoo.bard.webservice.metadata.DataSourceMetadataService
 import com.yahoo.bard.webservice.table.ConstrainedTable
 import com.yahoo.bard.webservice.table.TableTestUtils
-import com.yahoo.bard.webservice.table.StrictPhysicalTable
-import com.yahoo.bard.webservice.table.PhysicalTable
 import com.yahoo.bard.webservice.table.resolver.DefaultPhysicalTableResolver
 import com.yahoo.bard.webservice.web.ApiFilter
 import com.yahoo.bard.webservice.web.ApiHaving
-import com.yahoo.bard.webservice.web.DataApiRequestImpl
-
+import com.yahoo.bard.webservice.web.DataApiRequest
 import org.joda.time.DateTime
 import org.joda.time.Hours
 import org.joda.time.Interval
-
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
+
+import static com.yahoo.bard.webservice.config.BardFeatureFlag.TOP_N
+import static com.yahoo.bard.webservice.data.time.DefaultTimeGrain.*
+import static org.joda.time.DateTimeZone.UTC
 
 class DruidQueryBuilderSpec extends Specification {
 
@@ -60,7 +53,7 @@ class DruidQueryBuilderSpec extends Specification {
 
     LimitSpec limitSpec
     TopNMetric topNMetric
-    DataApiRequestImpl apiRequest
+    DataApiRequest apiRequest
     LogicalMetric lm1
 
     static final DruidFilterBuilder FILTER_BUILDER = new DefaultDruidFilterBuilder()
@@ -114,7 +107,7 @@ class DruidQueryBuilderSpec extends Specification {
         intervals = [new Interval(new DateTime("2015"), Hours.ONE)]
     }
 
-    def initDefault(DataApiRequestImpl apiRequest) {
+    def initDefault(DataApiRequest apiRequest) {
         lm1 = new LogicalMetric(resources.simpleTemplateQuery, new NoOpResultSetMapper(), "lm1", null)
 
         apiRequest.getTable() >> resources.lt12
@@ -229,7 +222,7 @@ class DruidQueryBuilderSpec extends Specification {
 
     def "Test recursive buildQueryMethods with Grain"() {
         setup:
-        apiRequest = Mock(DataApiRequestImpl)
+        apiRequest = Mock(DataApiRequest)
         initDefault(apiRequest)
 
         when:
@@ -313,7 +306,7 @@ class DruidQueryBuilderSpec extends Specification {
 
     def "Test top level buildQuery with group by druid query"() {
         setup:
-        apiRequest = Mock(DataApiRequestImpl)
+        apiRequest = Mock(DataApiRequest)
 
         initDefault(apiRequest)
 
@@ -327,7 +320,7 @@ class DruidQueryBuilderSpec extends Specification {
     @Unroll
     def "A #topNDruid query is built when there #isIsNot a having clause"() {
         setup:
-        apiRequest = Mock(DataApiRequestImpl)
+        apiRequest = Mock(DataApiRequest)
 
         apiRequest.getTopN() >> OptionalInt.of(5)
         apiRequest.getSorts() >> ([new OrderByColumn(new LogicalMetric(null, null, "m1"), SortDirection.DESC)] as Set)
@@ -351,7 +344,7 @@ class DruidQueryBuilderSpec extends Specification {
 
     def "Test top level buildQuery with multiple dimensions/single sort top N query"() {
         setup:
-        apiRequest = Mock(DataApiRequestImpl)
+        apiRequest = Mock(DataApiRequest)
         apiRequest.dimensions >> ([resources.d1, resources.d2] as Set)
         apiRequest.topN >> OptionalInt.of(5)
         apiRequest.sorts >> ([new OrderByColumn(new LogicalMetric(null, null, "m1"), SortDirection.DESC)] as Set)
@@ -367,7 +360,7 @@ class DruidQueryBuilderSpec extends Specification {
 
     def "Test top level buildQuery with single dimension/multiple sorts top N query"() {
         setup:
-        apiRequest = Mock(DataApiRequestImpl)
+        apiRequest = Mock(DataApiRequest)
         apiRequest.topN >> OptionalInt.of(5)
         apiRequest.sorts >> ([
                 new OrderByColumn(new LogicalMetric(null, null, "m1"), SortDirection.DESC),
@@ -385,7 +378,7 @@ class DruidQueryBuilderSpec extends Specification {
 
     def "Test top level buildQuery with multiple dimension/multiple sorts top N query"() {
         setup:
-        apiRequest = Mock(DataApiRequestImpl)
+        apiRequest = Mock(DataApiRequest)
         apiRequest.dimensions >> ([resources.d1, resources.d2] as Set)
         apiRequest.topN >> OptionalInt.of(5)
         apiRequest.sorts >> ([
@@ -405,7 +398,7 @@ class DruidQueryBuilderSpec extends Specification {
     @Unroll
     def "A #tsDruid query is built when there #isIsNot a having clause"() {
         setup:
-        apiRequest = Mock(DataApiRequestImpl)
+        apiRequest = Mock(DataApiRequest)
         apiRequest.dimensions >> ([] as Set)
         apiRequest.logicalMetrics >> ([resources.m1] as Set)
         apiRequest.havings >> havingMap
@@ -428,7 +421,7 @@ class DruidQueryBuilderSpec extends Specification {
     @Unroll
     def "TopN maps to druid #query when nDim:#nDims, nesting:#nested, nSorts:#nSorts, topN flag:#flag, havingMap:#havingMap"() {
         setup:
-        apiRequest = Mock(DataApiRequestImpl)
+        apiRequest = Mock(DataApiRequest)
 
         apiRequest.dimensions >> { nDims > 1 ? ([resources.d1, resources.d2] as Set) : [resources.d1] as Set }
         apiRequest.topN >> OptionalInt.of(5)
@@ -468,7 +461,7 @@ class DruidQueryBuilderSpec extends Specification {
     @Unroll
     def "TimeSeries maps to druid #query when nDim:#nDims, nesting:#nested, nSorts:#nSorts, havingMap:#havingMap"() {
         setup:
-        apiRequest = Mock(DataApiRequestImpl)
+        apiRequest = Mock(DataApiRequest)
 
         apiRequest.dimensions >> { nDims > 0 ? [resources.d1] as Set : [] as Set }
 

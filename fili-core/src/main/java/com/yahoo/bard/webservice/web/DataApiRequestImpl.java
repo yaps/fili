@@ -2,22 +2,8 @@
 // Licensed under the terms of the Apache license. Please see LICENSE.md file distributed with this work for terms.
 package com.yahoo.bard.webservice.web;
 
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.DATE_TIME_SORT_VALUE_INVALID;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.DIMENSION_FIELDS_UNDEFINED;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INCORRECT_METRIC_FILTER_FORMAT;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INTEGER_INVALID;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INVALID_METRIC_FILTER_CONDITION;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.METRICS_MISSING;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.METRICS_UNDEFINED;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.NON_AGGREGATABLE_INVALID;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.SORT_DIRECTION_INVALID;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.SORT_METRICS_NOT_IN_QUERY_FORMAT;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.SORT_METRICS_NOT_SORTABLE_FORMAT;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.SORT_METRICS_UNDEFINED;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.TABLE_UNDEFINED;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.TOP_N_UNSORTED;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.UNSUPPORTED_FILTERED_METRIC_CATEGORY;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.yahoo.bard.webservice.config.BardFeatureFlag;
 import com.yahoo.bard.webservice.data.DruidHavingBuilder;
 import com.yahoo.bard.webservice.data.dimension.Dimension;
@@ -29,7 +15,6 @@ import com.yahoo.bard.webservice.data.filterbuilders.DruidFilterBuilder;
 import com.yahoo.bard.webservice.data.metric.LogicalMetric;
 import com.yahoo.bard.webservice.data.metric.MetricDictionary;
 import com.yahoo.bard.webservice.data.time.GranularityParser;
-import com.yahoo.bard.webservice.data.time.TimeGrain;
 import com.yahoo.bard.webservice.druid.model.filter.Filter;
 import com.yahoo.bard.webservice.druid.model.having.Having;
 import com.yahoo.bard.webservice.druid.model.orderby.OrderByColumn;
@@ -43,34 +28,20 @@ import com.yahoo.bard.webservice.table.TableIdentifier;
 import com.yahoo.bard.webservice.util.StreamUtils;
 import com.yahoo.bard.webservice.web.util.BardConfigResources;
 import com.yahoo.bard.webservice.web.util.PaginationParameters;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.OptionalInt;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.*;
 
 /**
  * Data API Request. Such an API Request binds, validates, and models the parts of a request to the data endpoint.
@@ -706,18 +677,6 @@ public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest
     }
 
     /**
-     * Generate current date based on granularity.
-     *
-     * @param dateTime  The current moment as a DateTime
-     * @param timeGrain  The time grain used to round the date time
-     *
-     * @return truncated current date based on granularity
-     */
-    protected DateTime getCurrentDate(DateTime dateTime, TimeGrain timeGrain) {
-        return timeGrain.roundFloor(dateTime);
-    }
-
-    /**
      * Extract valid sort direction.
      *
      * @param columnWithDirection  Column and its sorting direction
@@ -901,34 +860,42 @@ public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest
      *
      * @return Set of filter dimensions.
      */
+    @Override
     public Set<Dimension> getFilterDimensions() {
         return filters.keySet();
     }
 
+    @Override
     public LogicalTable getTable() {
         return this.table;
     }
 
+    @Override
     public Granularity getGranularity() {
         return this.granularity;
     }
 
+    @Override
     public Set<Dimension> getDimensions() {
         return this.dimensions;
     }
 
+    @Override
     public LinkedHashMap<Dimension, LinkedHashSet<DimensionField>> getDimensionFields() {
         return this.perDimensionFields;
     }
 
+    @Override
     public Set<LogicalMetric> getLogicalMetrics() {
         return this.logicalMetrics;
     }
 
+    @Override
     public Set<Interval> getIntervals() {
         return this.intervals;
     }
 
+    @Override
     public Map<Dimension, Set<ApiFilter>> getFilters() {
         return this.filters;
     }
@@ -940,6 +907,7 @@ public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest
      *
      * @return the Druid filter
      */
+    @Override
     public Filter getFilter() {
         try (TimedPhase timer = RequestLog.startTiming("BuildingDruidFilter")) {
             return filterBuilder.buildFilters(this.filters);
@@ -949,34 +917,42 @@ public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest
         }
     }
 
+    @Override
     public Map<LogicalMetric, Set<ApiHaving>> getHavings() {
         return this.havings;
     }
 
+    @Override
     public Having getHaving() {
         return this.having;
     }
 
+    @Override
     public LinkedHashSet<OrderByColumn> getSorts() {
         return this.sorts;
     }
 
+    @Override
     public OptionalInt getCount() {
         return count == 0 ? OptionalInt.empty() : OptionalInt.of(count);
     }
 
+    @Override
     public OptionalInt getTopN() {
         return topN == 0 ? OptionalInt.empty() : OptionalInt.of(topN);
     }
 
+    @Override
     public DateTimeZone getTimeZone() {
         return timeZone;
     }
 
+    @Override
     public DruidFilterBuilder getFilterBuilder() {
         return filterBuilder;
     }
 
+    @Override
     public Optional<OrderByColumn> getDateTimeSort() {
         return dateTimeSort;
     }

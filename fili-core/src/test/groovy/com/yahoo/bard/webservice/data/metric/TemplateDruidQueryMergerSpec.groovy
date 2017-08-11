@@ -14,7 +14,7 @@ import com.yahoo.bard.webservice.druid.model.postaggregation.ArithmeticPostAggre
 import com.yahoo.bard.webservice.druid.model.postaggregation.ConstantPostAggregation
 import com.yahoo.bard.webservice.druid.model.postaggregation.FieldAccessorPostAggregation
 import com.yahoo.bard.webservice.druid.model.postaggregation.PostAggregation
-import com.yahoo.bard.webservice.web.DataApiRequestImpl
+import com.yahoo.bard.webservice.web.DataApiRequest
 
 import spock.lang.Specification
 
@@ -48,7 +48,7 @@ class TemplateDruidQueryMergerSpec extends Specification {
             LogicalMetric m2 = new LogicalMetric(q2, null, "Metric2", null)
             LogicalMetric m3 = new LogicalMetric(q3, null, "Metric3", null)
 
-            DataApiRequestImpl request = Mock(DataApiRequestImpl)
+            DataApiRequest request = Mock(DataApiRequest)
             TemplateDruidQueryMerger merger = new TemplateDruidQueryMerger()
 
         when:
@@ -69,7 +69,7 @@ class TemplateDruidQueryMergerSpec extends Specification {
 
     def "Verify merger.merge throws exception for empty list of metric"() {
         setup:
-            DataApiRequestImpl request = Mock(DataApiRequestImpl)
+            DataApiRequest request = Mock(DataApiRequest)
             TemplateDruidQueryMerger merger = new TemplateDruidQueryMerger()
 
         when:

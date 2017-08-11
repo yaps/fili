@@ -6,7 +6,7 @@ import com.yahoo.bard.webservice.config.SystemConfig
 import com.yahoo.bard.webservice.config.SystemConfigProvider
 import com.yahoo.bard.webservice.druid.model.query.DruidAggregationQuery
 import com.yahoo.bard.webservice.druid.model.query.QueryContext
-import com.yahoo.bard.webservice.web.DataApiRequestImpl
+import com.yahoo.bard.webservice.web.DataApiRequest
 import com.yahoo.bard.webservice.web.responseprocessors.DruidPartialDataResponseProcessor
 import com.yahoo.bard.webservice.web.responseprocessors.ResponseProcessor
 import spock.lang.Specification
@@ -25,7 +25,7 @@ class DruidPartialDataRequestHandlerSpec extends Specification {
         RequestContext requestContext = Mock(RequestContext)
         DruidAggregationQuery druidQuery = Mock(DruidAggregationQuery)
         QueryContext queryContext = Mock(QueryContext)
-        DataApiRequestImpl apiRequest = Mock(DataApiRequestImpl)
+        DataApiRequest apiRequest = Mock(DataApiRequest)
 
         druidQuery.getContext() >> queryContext
 

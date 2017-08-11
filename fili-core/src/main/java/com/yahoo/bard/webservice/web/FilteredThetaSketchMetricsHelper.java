@@ -71,7 +71,7 @@ public class FilteredThetaSketchMetricsHelper implements MetricsFilterSetBuilder
             JsonNode metricFilterObject,
             DimensionDictionary dimensionDictionary,
             LogicalTable table,
-            DataApiRequestImpl apiRequest
+            DataApiRequest apiRequest
     ) throws DimensionRowNotFoundException {
 
         TemplateDruidQuery templateDruidQuery = logicalMetric.getTemplateDruidQuery();
@@ -211,7 +211,7 @@ public class FilteredThetaSketchMetricsHelper implements MetricsFilterSetBuilder
             JsonNode metricFilterObject,
             DimensionDictionary dimensionDictionary,
             LogicalTable table,
-            DataApiRequestImpl apiRequest
+            DataApiRequest apiRequest
     ) throws DimensionRowNotFoundException {
 
         Set<PostAggregation> postAggregations = query.getPostAggregations();
@@ -387,7 +387,7 @@ public class FilteredThetaSketchMetricsHelper implements MetricsFilterSetBuilder
             Aggregation aggregation,
             DimensionDictionary dimensionDictionary,
             LogicalTable table,
-            DataApiRequestImpl apiRequest
+            DataApiRequest apiRequest
     ) throws DimensionRowNotFoundException {
         //Converting json filter string to a plain filter string to prepare the Filter out of it
         String filterString = filter.get("AND").asText().replace("],", "]],");

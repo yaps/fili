@@ -15,7 +15,7 @@ import com.yahoo.bard.webservice.table.ConstrainedTable
 import com.yahoo.bard.webservice.table.PhysicalTable
 import com.yahoo.bard.webservice.table.PhysicalTableDictionary
 import com.yahoo.bard.webservice.util.SimplifiedIntervalList
-import com.yahoo.bard.webservice.web.DataApiRequestImpl
+import com.yahoo.bard.webservice.web.DataApiRequest
 import com.yahoo.bard.webservice.web.responseprocessors.MappingResponseProcessor
 import com.yahoo.bard.webservice.web.responseprocessors.ResponseContext
 import com.yahoo.bard.webservice.web.responseprocessors.ResponseProcessor
@@ -37,7 +37,7 @@ class PartialDataRequestHandlerSpec extends Specification {
     PartialDataHandler partialDataHandler = Mock(PartialDataHandler)
 
     RequestContext rc = Mock(RequestContext)
-    DataApiRequestImpl apiRequest = Mock(DataApiRequestImpl)
+    DataApiRequest apiRequest = Mock(DataApiRequest)
     GroupByQuery groupByQuery = Mock(GroupByQuery)
     DataSource dataSource = Mock(DataSource)
     MappingResponseProcessor response = Mock(MappingResponseProcessor)

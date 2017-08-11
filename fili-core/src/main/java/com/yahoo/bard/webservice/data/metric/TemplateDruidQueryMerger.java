@@ -2,7 +2,7 @@
 // Licensed under the terms of the Apache license. Please see LICENSE.md file distributed with this work for terms.
 package com.yahoo.bard.webservice.data.metric;
 
-import com.yahoo.bard.webservice.web.DataApiRequestImpl;
+import com.yahoo.bard.webservice.web.DataApiRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ public class TemplateDruidQueryMerger {
      *
      * @return The merged TemplateDruidQuery
      */
-    public TemplateDruidQuery merge(DataApiRequestImpl request) {
+    public TemplateDruidQuery merge(DataApiRequest request) {
         Set<LogicalMetric> metrics = request.getLogicalMetrics();
         Set<TemplateDruidQuery> allQueries = new LinkedHashSet<>();
 

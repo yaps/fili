@@ -4,7 +4,7 @@ package com.yahoo.bard.webservice.table;
 
 import com.yahoo.bard.webservice.data.time.TimeGrain;
 import com.yahoo.bard.webservice.druid.model.query.Granularity;
-import com.yahoo.bard.webservice.web.DataApiRequestImpl;
+import com.yahoo.bard.webservice.web.DataApiRequest;
 
 import org.joda.time.ReadablePeriod;
 
@@ -52,7 +52,7 @@ public class TableIdentifier extends AbstractMap.SimpleImmutableEntry<String, Op
      *
      * @return the table identifier for the request
      */
-    public static TableIdentifier create(DataApiRequestImpl request) {
+    public static TableIdentifier create(DataApiRequest request) {
         return new TableIdentifier(request.getTable().getName(), getGranularityPeriod(request.getGranularity()));
     }
 

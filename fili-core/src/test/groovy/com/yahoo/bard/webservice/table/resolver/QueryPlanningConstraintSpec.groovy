@@ -3,20 +3,20 @@
 package com.yahoo.bard.webservice.table.resolver
 
 import com.yahoo.bard.webservice.data.time.DefaultTimeGrain
-import com.yahoo.bard.webservice.web.DataApiRequestImpl
+import com.yahoo.bard.webservice.web.DataApiRequest
 
 import spock.lang.Specification
 
 class QueryPlanningConstraintSpec extends Specification {
 
     def supplyDependencies() {
-        DataApiRequestImpl dataApiRequest = Mock(DataApiRequestImpl)
+        DataApiRequest dataApiRequest = Mock(DataApiRequest)
         dataApiRequest.getDimensions() >> ([] as Set)
         dataApiRequest.getFilterDimensions() >> ([] as Set)
         dataApiRequest.getFilters() >> [:]
         dataApiRequest.getIntervals() >> ([] as Set)
         dataApiRequest.getLogicalMetrics() >> ([] as Set)
         dataApiRequest.getGranularity() >> (DefaultTimeGrain.DAY)
-        [(DataApiRequestImpl.class): dataApiRequest]
+        [(DataApiRequest.class): dataApiRequest]
     }
 }

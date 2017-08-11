@@ -6,7 +6,7 @@ import com.yahoo.bard.webservice.data.metric.LogicalMetric;
 import com.yahoo.bard.webservice.data.metric.TemplateDruidQuery;
 import com.yahoo.bard.webservice.druid.model.query.Granularity;
 import com.yahoo.bard.webservice.table.LogicalTable;
-import com.yahoo.bard.webservice.web.DataApiRequestImpl;
+import com.yahoo.bard.webservice.web.DataApiRequest;
 
 import org.joda.time.Interval;
 
@@ -36,7 +36,7 @@ public class QueryPlanningConstraint extends DataSourceConstraint {
      * @param templateDruidQuery Query containing metric constraint information.
      */
     public QueryPlanningConstraint(
-            @NotNull DataApiRequestImpl dataApiRequest,
+            @NotNull DataApiRequest dataApiRequest,
             @NotNull TemplateDruidQuery templateDruidQuery
     ) {
         super(dataApiRequest, templateDruidQuery);

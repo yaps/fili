@@ -18,7 +18,7 @@ import com.yahoo.bard.webservice.data.volatility.DefaultingVolatileIntervalsServ
 import com.yahoo.bard.webservice.druid.model.query.AllGranularity
 import com.yahoo.bard.webservice.druid.model.query.Granularity
 import com.yahoo.bard.webservice.table.PhysicalTable
-import com.yahoo.bard.webservice.web.DataApiRequestImpl
+import com.yahoo.bard.webservice.web.DataApiRequest
 
 import org.joda.time.Interval
 
@@ -126,8 +126,8 @@ class DefaultPhysicalTableResolverSpec  extends Specification {
         metricNames.collect({ resources.metricDictionary.get(it)});
     }
 
-    DataApiRequestImpl buildDataApiRequest(Map<String, Object> prototype) {
-        DataApiRequestImpl apiRequest = Mock(DataApiRequestImpl)
+    DataApiRequest buildDataApiRequest(Map<String, Object> prototype) {
+        DataApiRequest apiRequest = Mock(DataApiRequest)
         Granularity granularity = prototype['granularity']
         granularity = granularity instanceof ZonelessTimeGrain ?
                 ((ZonelessTimeGrain) granularity).buildZonedTimeGrain(UTC) :
@@ -159,7 +159,7 @@ class DefaultPhysicalTableResolverSpec  extends Specification {
         apiRequestPrototype['dimensions'] = dimensions
         apiRequestPrototype['granularity'] = grain
         apiRequestPrototype['logicalMetrics'] = metricsForNameSet(queryPrototype['dependantFieldNames'] as Set)
-        DataApiRequestImpl apiRequest = buildDataApiRequest(apiRequestPrototype)
+        DataApiRequest apiRequest = buildDataApiRequest(apiRequestPrototype)
 
         expect:
         resolver.filter([table], new QueryPlanningConstraint(apiRequest, query)) == [table] as Set
@@ -191,7 +191,7 @@ class DefaultPhysicalTableResolverSpec  extends Specification {
         apiRequestPrototype['dimensions'] = dimensions
         apiRequestPrototype['granularity'] = granularity
         apiRequestPrototype['logicalMetrics'] = metricsForNameSet(queryPrototype['dependantFieldNames'] as Set)
-        DataApiRequestImpl apiRequest = buildDataApiRequest(apiRequestPrototype)
+        DataApiRequest apiRequest = buildDataApiRequest(apiRequestPrototype)
 
         expect:
         resolver.filter([table], new QueryPlanningConstraint(apiRequest, query)) == [table] as Set
@@ -222,7 +222,7 @@ class DefaultPhysicalTableResolverSpec  extends Specification {
         apiRequestPrototype['dimensions'] = dimensions
         apiRequestPrototype['granularity'] = grain
         apiRequestPrototype['logicalMetrics'] = metricsForNameSet(queryPrototype['dependantFieldNames'] as Set)
-        DataApiRequestImpl apiRequest = buildDataApiRequest(apiRequestPrototype)
+        DataApiRequest apiRequest = buildDataApiRequest(apiRequestPrototype)
 
         when:
         resolver.filter([table], new QueryPlanningConstraint(apiRequest, query))
@@ -249,7 +249,7 @@ class DefaultPhysicalTableResolverSpec  extends Specification {
         apiRequestPrototype['dimensions'] = dimensions
         apiRequestPrototype['granularity'] = granularity
         apiRequestPrototype['logicalMetrics'] = metricsForNameSet([] as Set)
-        DataApiRequestImpl apiRequest = buildDataApiRequest(apiRequestPrototype)
+        DataApiRequest apiRequest = buildDataApiRequest(apiRequestPrototype)
 
         expect:
         resolver.filter([table], new QueryPlanningConstraint(apiRequest, query)) == [table] as Set
@@ -273,7 +273,7 @@ class DefaultPhysicalTableResolverSpec  extends Specification {
         apiRequestPrototype['dimensions'] = dimensions
         apiRequestPrototype['granularity'] = granularity
         apiRequestPrototype['logicalMetrics'] = metricsForNameSet([] as Set)
-        DataApiRequestImpl apiRequest = buildDataApiRequest(apiRequestPrototype)
+        DataApiRequest apiRequest = buildDataApiRequest(apiRequestPrototype)
 
         when:
         resolver.filter([table], new QueryPlanningConstraint(apiRequest, query))
@@ -298,7 +298,7 @@ class DefaultPhysicalTableResolverSpec  extends Specification {
         apiRequestPrototype['dimensions'] = dimSet1
         apiRequestPrototype['granularity'] = grain
         apiRequestPrototype['logicalMetrics'] = metricsForNameSet(queryPrototype['dependantFieldNames'] as Set)
-        DataApiRequestImpl apiRequest = buildDataApiRequest(apiRequestPrototype)
+        DataApiRequest apiRequest = buildDataApiRequest(apiRequestPrototype)
 
         expect:
         resolver.filter([table], new QueryPlanningConstraint(apiRequest, query)) == [table] as Set
@@ -324,7 +324,7 @@ class DefaultPhysicalTableResolverSpec  extends Specification {
         apiRequestPrototype['dimensions'] = dimSet1
         apiRequestPrototype['granularity'] = grain
         apiRequestPrototype['logicalMetrics'] = metricsForNameSet(queryPrototype['dependantFieldNames'] as Set)
-        DataApiRequestImpl apiRequest = buildDataApiRequest(apiRequestPrototype)
+        DataApiRequest apiRequest = buildDataApiRequest(apiRequestPrototype)
 
         when:
         resolver.filter([table], new QueryPlanningConstraint(apiRequest, query))
@@ -349,7 +349,7 @@ class DefaultPhysicalTableResolverSpec  extends Specification {
         apiRequestPrototype['dimensions'] = dimSet1
         apiRequestPrototype['granularity'] = grain
         apiRequestPrototype['logicalMetrics'] = metricsForNameSet(queryPrototype['dependantFieldNames'] as Set)
-        DataApiRequestImpl apiRequest = buildDataApiRequest(apiRequestPrototype)
+        DataApiRequest apiRequest = buildDataApiRequest(apiRequestPrototype)
 
         expect:
         resolver.filter([table], new QueryPlanningConstraint(apiRequest, query)) == [table] as Set
@@ -376,7 +376,7 @@ class DefaultPhysicalTableResolverSpec  extends Specification {
         apiRequestPrototype['dimensions'] = dimSet1
         apiRequestPrototype['granularity'] = grain
         apiRequestPrototype['logicalMetrics'] = metricsForNameSet(queryPrototype['dependantFieldNames'] as Set)
-        DataApiRequestImpl apiRequest = buildDataApiRequest(apiRequestPrototype)
+        DataApiRequest apiRequest = buildDataApiRequest(apiRequestPrototype)
 
         when:
         resolver.filter([table], new QueryPlanningConstraint(apiRequest, query))
@@ -400,7 +400,7 @@ class DefaultPhysicalTableResolverSpec  extends Specification {
         apiRequestPrototype['dimensions'] = dimSet1
         apiRequestPrototype['granularity'] = grain
         apiRequestPrototype['logicalMetrics'] = metricsForNameSet(queryPrototype['dependantFieldNames'] as Set)
-        DataApiRequestImpl apiRequest = buildDataApiRequest(apiRequestPrototype)
+        DataApiRequest apiRequest = buildDataApiRequest(apiRequestPrototype)
 
         BinaryOperator betterTable = resolver.getBetterTableOperator(new QueryPlanningConstraint(apiRequest, query))
 
@@ -426,7 +426,7 @@ class DefaultPhysicalTableResolverSpec  extends Specification {
         apiRequestPrototype['intervals'] = [new Interval(interval)]
         apiRequestPrototype['granularity'] = grain
         apiRequestPrototype['logicalMetrics'] = metricsForNameSet(queryPrototype['dependantFieldNames'] as Set)
-        DataApiRequestImpl apiRequest = buildDataApiRequest(apiRequestPrototype)
+        DataApiRequest apiRequest = buildDataApiRequest(apiRequestPrototype)
 
         BinaryOperator betterTable = resolver.getBetterTableOperator(new QueryPlanningConstraint(apiRequest, query))
 
@@ -480,7 +480,7 @@ class DefaultPhysicalTableResolverSpec  extends Specification {
         apiRequestPrototype['intervals'] = intervalList
         apiRequestPrototype['granularity'] = grain
         apiRequestPrototype['logicalMetrics'] = metricsForNameSet(queryPrototype['dependantFieldNames'] as Set)
-        DataApiRequestImpl apiRequest = buildDataApiRequest(apiRequestPrototype)
+        DataApiRequest apiRequest = buildDataApiRequest(apiRequestPrototype)
 
         expect:
         resolver.resolve(resources.tg1All.physicalTables, new QueryPlanningConstraint(apiRequest, query)) == expected
@@ -510,7 +510,7 @@ class DefaultPhysicalTableResolverSpec  extends Specification {
         apiRequestPrototype['intervals'] = [new Interval(interval)]
         apiRequestPrototype['granularity'] = grain
         apiRequestPrototype['logicalMetrics'] = metricsForNameSet(queryPrototype['dependantFieldNames'] as Set)
-        DataApiRequestImpl apiRequest = buildDataApiRequest(apiRequestPrototype)
+        DataApiRequest apiRequest = buildDataApiRequest(apiRequestPrototype)
 
         expect:
         resolver.resolve(resources.tg1All.physicalTables, new QueryPlanningConstraint(apiRequest, query)) == expected
@@ -549,7 +549,7 @@ class DefaultPhysicalTableResolverSpec  extends Specification {
         apiRequestPrototype['intervals'] = [new Interval("2015/2017")]
         apiRequestPrototype['granularity'] = grain
         apiRequestPrototype['logicalMetrics'] = metricsForNameSet(queryPrototype['dependantFieldNames'] as Set)
-        DataApiRequestImpl apiRequest = buildDataApiRequest(apiRequestPrototype)
+        DataApiRequest apiRequest = buildDataApiRequest(apiRequestPrototype)
 
         expect: "The table with more data available is preferred"
         localResolver.resolve([resources.volatileHourTable, resources.volatileDayTable], new QueryPlanningConstraint(apiRequest, query)) == expected
@@ -577,7 +577,7 @@ class DefaultPhysicalTableResolverSpec  extends Specification {
         apiRequestPrototype['dimensions'] = dimensions
         apiRequestPrototype['granularity'] = grain
         apiRequestPrototype['logicalMetrics'] = metricsForNameSet(queryPrototype['dependantFieldNames'] as Set)
-        DataApiRequestImpl apiRequest = buildDataApiRequest(apiRequestPrototype)
+        DataApiRequest apiRequest = buildDataApiRequest(apiRequestPrototype)
 
         expect:
         resolver.resolve(tablegroup.physicalTables, new QueryPlanningConstraint(apiRequest, query)) == expected
@@ -605,7 +605,7 @@ class DefaultPhysicalTableResolverSpec  extends Specification {
         apiRequestPrototype['dimensions'] = dimensions
         apiRequestPrototype['granularity'] = grain
         apiRequestPrototype['logicalMetrics'] = metricsForNameSet(queryPrototype['dependantFieldNames'] as Set)
-        DataApiRequestImpl apiRequest = buildDataApiRequest(apiRequestPrototype)
+        DataApiRequest apiRequest = buildDataApiRequest(apiRequestPrototype)
 
         when:
         resolver.resolve(tablegroup.physicalTables, new QueryPlanningConstraint(apiRequest, query))
@@ -630,7 +630,7 @@ class DefaultPhysicalTableResolverSpec  extends Specification {
         apiRequestPrototype['dimensions'] = dimensions
         apiRequestPrototype['granularity'] = grain
         apiRequestPrototype['logicalMetrics'] = metricsForNameSet(queryPrototype['dependantFieldNames'] as Set)
-        DataApiRequestImpl apiRequest = buildDataApiRequest(apiRequestPrototype)
+        DataApiRequest apiRequest = buildDataApiRequest(apiRequestPrototype)
 
         expect:
         resolver.resolve(tablegroup.physicalTables, new QueryPlanningConstraint(apiRequest, query)) == table

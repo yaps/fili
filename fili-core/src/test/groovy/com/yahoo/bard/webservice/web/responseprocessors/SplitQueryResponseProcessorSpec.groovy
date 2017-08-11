@@ -8,7 +8,7 @@ import com.yahoo.bard.webservice.druid.client.FailureCallback
 import com.yahoo.bard.webservice.druid.client.HttpErrorCallback
 import com.yahoo.bard.webservice.druid.model.query.GroupByQuery
 import com.yahoo.bard.webservice.logging.RequestLog
-import com.yahoo.bard.webservice.web.DataApiRequestImpl
+import com.yahoo.bard.webservice.web.DataApiRequest
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -24,7 +24,7 @@ public class SplitQueryResponseProcessorSpec extends Specification {
     private static final ObjectMapper MAPPER = new ObjectMappersSuite().getMapper()
 
     SplitQueryResponseProcessor sqrp
-    DataApiRequestImpl apiRequest = Mock(DataApiRequestImpl)
+    DataApiRequest apiRequest = Mock(DataApiRequest)
 
     private final ResponseProcessor next = Mock(ResponseProcessor)
     GroupByQuery groupByQuery1 = Mock(GroupByQuery)

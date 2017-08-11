@@ -8,7 +8,7 @@ import com.yahoo.bard.webservice.druid.client.HttpErrorCallback;
 import com.yahoo.bard.webservice.druid.client.SuccessCallback;
 import com.yahoo.bard.webservice.druid.model.query.DruidAggregationQuery;
 import com.yahoo.bard.webservice.druid.model.query.Granularity;
-import com.yahoo.bard.webservice.web.DataApiRequestImpl;
+import com.yahoo.bard.webservice.web.DataApiRequest;
 import com.yahoo.bard.webservice.web.ErrorMessageFormat;
 import com.yahoo.bard.webservice.web.responseprocessors.ResponseProcessor;
 import com.yahoo.bard.webservice.web.responseprocessors.WeightCheckResponseProcessor;
@@ -62,7 +62,7 @@ public class WeightCheckRequestHandler extends BaseDataRequestHandler {
     @Override
     public boolean handleRequest(
             final RequestContext context,
-            final DataApiRequestImpl request,
+            final DataApiRequest request,
             final DruidAggregationQuery<?> druidQuery,
             final ResponseProcessor response
     ) {
@@ -109,7 +109,7 @@ public class WeightCheckRequestHandler extends BaseDataRequestHandler {
      */
     protected SuccessCallback buildSuccessCallback(
             final RequestContext context,
-            final DataApiRequestImpl request,
+            final DataApiRequest request,
             final DruidAggregationQuery<?> druidQuery,
             final ResponseProcessor response,
             final long queryRowLimit

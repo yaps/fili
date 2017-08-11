@@ -2,15 +2,11 @@
 // Licensed under the terms of the Apache license. Please see LICENSE.md file distributed with this work for terms.
 package com.yahoo.bard.webservice.web.responseprocessors
 
-import static com.yahoo.bard.webservice.data.time.DefaultTimeGrain.DAY
-import static com.yahoo.bard.webservice.druid.model.DefaultQueryType.GROUP_BY
-
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.common.collect.Sets
 import com.yahoo.bard.webservice.application.ObjectMappersSuite
-import com.yahoo.bard.webservice.data.DruidResponseParser
-import com.yahoo.bard.webservice.data.HttpResponseChannel
-import com.yahoo.bard.webservice.data.HttpResponseMaker
-import com.yahoo.bard.webservice.data.ResultSet
-import com.yahoo.bard.webservice.data.ResultSetSchema
+import com.yahoo.bard.webservice.data.*
 import com.yahoo.bard.webservice.data.dimension.BardDimensionField
 import com.yahoo.bard.webservice.data.dimension.Dimension
 import com.yahoo.bard.webservice.data.dimension.DimensionColumn
@@ -36,13 +32,7 @@ import com.yahoo.bard.webservice.web.DataApiRequestImpl
 import com.yahoo.bard.webservice.web.JsonResponseWriter
 import com.yahoo.bard.webservice.web.ResponseFormatType
 import com.yahoo.bard.webservice.web.ResponseWriter
-
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.common.collect.Sets
-
 import org.joda.time.DateTimeZone
-
 import rx.subjects.PublishSubject
 import rx.subjects.Subject
 import spock.lang.Specification
@@ -52,6 +42,9 @@ import javax.ws.rs.core.MultivaluedMap
 import javax.ws.rs.core.PathSegment
 import javax.ws.rs.core.Response
 import javax.ws.rs.core.UriInfo
+
+import static com.yahoo.bard.webservice.data.time.DefaultTimeGrain.DAY
+import static com.yahoo.bard.webservice.druid.model.DefaultQueryType.GROUP_BY
 
 class ResultSetResponseProcessorSpec extends Specification {
 

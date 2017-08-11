@@ -7,6 +7,7 @@ import com.yahoo.bard.webservice.data.dimension.DimensionField;
 import com.yahoo.bard.webservice.data.filterbuilders.DruidFilterBuilder;
 import com.yahoo.bard.webservice.data.metric.LogicalMetric;
 import com.yahoo.bard.webservice.data.metric.MetricDictionary;
+import com.yahoo.bard.webservice.data.time.TimeGrain;
 import com.yahoo.bard.webservice.druid.model.filter.Filter;
 import com.yahoo.bard.webservice.druid.model.having.Having;
 import com.yahoo.bard.webservice.druid.model.orderby.OrderByColumn;
@@ -14,6 +15,7 @@ import com.yahoo.bard.webservice.druid.model.query.Granularity;
 import com.yahoo.bard.webservice.logging.RequestLog;
 import com.yahoo.bard.webservice.logging.TimedPhase;
 import com.yahoo.bard.webservice.table.LogicalTable;
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.slf4j.Logger;
@@ -27,7 +29,7 @@ import static com.yahoo.bard.webservice.web.ErrorMessageFormat.HAVING_METRICS_NO
 /**
  * Data API Request. Such an API Request binds, validates, and models the parts of a request to the data endpoint.
  */
- public interface DataApiRequest {
+ public interface DataApiRequest extends ApiRequest {
     String REQUEST_MAPPER_NAMESPACE = "dataApiRequestMapper";
     Logger LOG = LoggerFactory.getLogger(DataApiRequest.class);
     String COMMA_AFTER_BRACKET_PATTERN = "(?<=]),";
@@ -228,5 +230,17 @@ import static com.yahoo.bard.webservice.web.ErrorMessageFormat.HAVING_METRICS_NO
 
             return generated;
         }
+    }
+
+    /**
+     * Generate current date based on granularity.
+     *
+     * @param dateTime  The current moment as a DateTime
+     * @param timeGrain  The time grain used to round the date time
+     *
+     * @return truncated current date based on granularity
+     */
+     default DateTime getCurrentDate(DateTime dateTime, TimeGrain timeGrain) {
+        return timeGrain.roundFloor(dateTime);
     }
 }

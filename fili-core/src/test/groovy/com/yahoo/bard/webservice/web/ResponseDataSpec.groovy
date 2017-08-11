@@ -42,7 +42,7 @@ class ResponseDataSpec extends Specification {
     Set<LogicalMetric> testLogicalMetrics
     ResponseData response
     DateTime dateTime = new DateTime(1000L * 60 * 60 * 24 * 365 * 45)
-    DataApiRequestImpl apiRequest = Mock(DataApiRequestImpl)
+    DataApiRequest apiRequest = Mock(DataApiRequest)
     ResultSet resultSet
     ByteArrayOutputStream os = new ByteArrayOutputStream()
     DateTimeZone originalTimeZone = DateTimeZone.getDefault()

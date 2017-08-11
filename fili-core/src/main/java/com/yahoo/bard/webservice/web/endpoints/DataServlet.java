@@ -40,11 +40,7 @@ import com.yahoo.bard.webservice.logging.blocks.DruidFilterInfo;
 import com.yahoo.bard.webservice.table.LogicalTable;
 import com.yahoo.bard.webservice.table.resolver.NoMatchFoundException;
 import com.yahoo.bard.webservice.util.Either;
-import com.yahoo.bard.webservice.web.ApiRequestImpl;
-import com.yahoo.bard.webservice.web.DataApiRequestImpl;
-import com.yahoo.bard.webservice.web.PreResponse;
-import com.yahoo.bard.webservice.web.RequestMapper;
-import com.yahoo.bard.webservice.web.RequestValidationException;
+import com.yahoo.bard.webservice.web.*;
 import com.yahoo.bard.webservice.web.handlers.DataRequestHandler;
 import com.yahoo.bard.webservice.web.handlers.RequestContext;
 import com.yahoo.bard.webservice.web.handlers.RequestHandlerUtils;
@@ -151,7 +147,7 @@ public class DataServlet extends CORSPreflightServlet implements BardConfigResou
             TemplateDruidQueryMerger templateDruidQueryMerger,
             DruidResponseParser druidResponseParser,
             RequestWorkflowProvider workflowProvider,
-            @Named(DataApiRequestImpl.REQUEST_MAPPER_NAMESPACE) RequestMapper requestMapper,
+            @Named(DataApiRequest.REQUEST_MAPPER_NAMESPACE) RequestMapper requestMapper,
             ObjectMappersSuite objectMappers,
             DruidFilterBuilder filterBuilder,
             GranularityParser granularityParser,
@@ -198,7 +194,7 @@ public class DataServlet extends CORSPreflightServlet implements BardConfigResou
      * @param readCache  whether cache is bypassed or not
      * @param druidQuery  Druid query for which we're logging metrics
      */
-    private void logRequestMetrics(DataApiRequestImpl request, Boolean readCache, DruidQuery<?> druidQuery) {
+    private void logRequestMetrics(DataApiRequest request, Boolean readCache, DruidQuery<?> druidQuery) {
         // Log dimension metrics
         Set<Dimension> dimensions = request.getDimensions();
         for (Dimension dim : dimensions) {
@@ -352,7 +348,7 @@ public class DataServlet extends CORSPreflightServlet implements BardConfigResou
             @Suspended final AsyncResponse asyncResponse
     ) {
         try {
-            DataApiRequestImpl apiRequest;
+            DataApiRequest apiRequest;
             try (TimedPhase timer = RequestLog.startTiming("DataApiRequest")) {
                 apiRequest = new DataApiRequestImpl(
                         tableName,
@@ -377,7 +373,7 @@ public class DataServlet extends CORSPreflightServlet implements BardConfigResou
 
             if (requestMapper != null) {
                 try (TimedPhase timer = RequestLog.startTiming("DataApiRequestMappers")) {
-                    apiRequest = (DataApiRequestImpl) requestMapper.apply(apiRequest, containerRequestContext);
+                    apiRequest = (DataApiRequest) requestMapper.apply(apiRequest, containerRequestContext);
                 }
             }
 
@@ -402,7 +398,7 @@ public class DataServlet extends CORSPreflightServlet implements BardConfigResou
             Subject<PreResponse, PreResponse> queryResultsEmitter = PublishSubject.create();
 
             setupAsynchronousWorkflows(
-                    apiRequest,
+                    (DataApiRequestImpl) apiRequest,
                     queryResultsEmitter,
                     containerRequestContext,
                     asyncResponse,
@@ -471,9 +467,9 @@ public class DataServlet extends CORSPreflightServlet implements BardConfigResou
         // resources once per subscription. A connectable Observable's chain is only executed once
         // regardless of the number of subscriptions.
         ConnectableObservable<Either<PreResponse, JobRow>> payloadEmitter;
-        if (asyncAfter == DataApiRequestImpl.ASYNCHRONOUS_ASYNC_AFTER_VALUE) {
+        if (asyncAfter == DataApiRequest.ASYNCHRONOUS_ASYNC_AFTER_VALUE) {
             payloadEmitter = Observable.just(Either.<PreResponse, JobRow>right(jobMetadata)).publish();
-        } else if (asyncAfter == DataApiRequestImpl.SYNCHRONOUS_ASYNC_AFTER_VALUE) {
+        } else if (asyncAfter == DataApiRequest.SYNCHRONOUS_ASYNC_AFTER_VALUE) {
             payloadEmitter = queryResultsEmitter.map(Either::<PreResponse, JobRow>left).publish();
         } else {
             payloadEmitter = queryResultsEmitter
