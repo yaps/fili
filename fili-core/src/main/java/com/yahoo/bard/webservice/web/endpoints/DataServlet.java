@@ -39,7 +39,12 @@ import com.yahoo.bard.webservice.logging.blocks.DruidFilterInfo;
 import com.yahoo.bard.webservice.table.LogicalTable;
 import com.yahoo.bard.webservice.table.resolver.NoMatchFoundException;
 import com.yahoo.bard.webservice.util.Either;
-import com.yahoo.bard.webservice.web.*;
+import com.yahoo.bard.webservice.web.ApiRequest;
+import com.yahoo.bard.webservice.web.DataApiRequestImpl;
+import com.yahoo.bard.webservice.web.DataApiRequest;
+import com.yahoo.bard.webservice.web.PreResponse;
+import com.yahoo.bard.webservice.web.RequestMapper;
+import com.yahoo.bard.webservice.web.RequestValidationException;
 import com.yahoo.bard.webservice.web.handlers.DataRequestHandler;
 import com.yahoo.bard.webservice.web.handlers.RequestContext;
 import com.yahoo.bard.webservice.web.handlers.RequestHandlerUtils;
@@ -77,7 +82,9 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static com.yahoo.bard.webservice.web.handlers.workflow.DruidWorkflow.REQUEST_WORKFLOW_TIMER;
-import static javax.ws.rs.core.Response.Status.*;
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.GATEWAY_TIMEOUT;
+import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 
 /**
  * Data Servlet responds to the data endpoint which allows for data query requests to the Druid brokers/router.

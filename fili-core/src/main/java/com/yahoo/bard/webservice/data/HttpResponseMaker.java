@@ -33,7 +33,11 @@ import java.util.stream.Collectors;
 
 import static com.yahoo.bard.webservice.web.handlers.PartialDataRequestHandler.getPartialIntervalsWithDefault;
 import static com.yahoo.bard.webservice.web.handlers.VolatileDataRequestHandler.getVolatileIntervalsWithDefault;
-import static com.yahoo.bard.webservice.web.responseprocessors.ResponseContextKeys.*;
+import static com.yahoo.bard.webservice.web.responseprocessors.ResponseContextKeys.HEADERS;
+import static com.yahoo.bard.webservice.web.responseprocessors.ResponseContextKeys.API_METRIC_COLUMN_NAMES;
+import static com.yahoo.bard.webservice.web.responseprocessors.ResponseContextKeys.PAGINATION_CONTEXT_KEY;
+import static com.yahoo.bard.webservice.web.responseprocessors.ResponseContextKeys.PAGINATION_LINKS_CONTEXT_KEY;
+import static com.yahoo.bard.webservice.web.responseprocessors.ResponseContextKeys.REQUESTED_API_DIMENSION_FIELDS;
 
 /**
  * Translates a PreResponse into an HTTP Response containing the results of a query.
