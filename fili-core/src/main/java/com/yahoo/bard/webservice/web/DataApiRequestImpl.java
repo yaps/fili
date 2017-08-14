@@ -38,10 +38,34 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.*;
+import java.util.Optional;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.*;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.TABLE_UNDEFINED;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INTEGER_INVALID;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.TOP_N_UNSORTED;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.DATE_TIME_SORT_VALUE_INVALID;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.DIMENSION_FIELDS_UNDEFINED;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.NON_AGGREGATABLE_INVALID;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.METRICS_MISSING;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INCORRECT_METRIC_FILTER_FORMAT;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.UNSUPPORTED_FILTERED_METRIC_CATEGORY;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INVALID_METRIC_FILTER_CONDITION;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.METRICS_UNDEFINED;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.SORT_DIRECTION_INVALID;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.SORT_METRICS_NOT_IN_QUERY_FORMAT;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.SORT_METRICS_UNDEFINED;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.SORT_METRICS_NOT_SORTABLE_FORMAT;
 
 /**
  * Data API Request. Such an API Request binds, validates, and models the parts of a request to the data endpoint.
