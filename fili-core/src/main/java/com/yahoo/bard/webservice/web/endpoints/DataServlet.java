@@ -468,9 +468,9 @@ public class DataServlet extends CORSPreflightServlet implements BardConfigResou
         // resources once per subscription. A connectable Observable's chain is only executed once
         // regardless of the number of subscriptions.
         ConnectableObservable<Either<PreResponse, JobRow>> payloadEmitter;
-        if (asyncAfter == DataApiRequest.ASYNCHRONOUS_ASYNC_AFTER_VALUE) {
+        if (asyncAfter == DataApiRequestImpl.ASYNCHRONOUS_ASYNC_AFTER_VALUE) {
             payloadEmitter = Observable.just(Either.<PreResponse, JobRow>right(jobMetadata)).publish();
-        } else if (asyncAfter == DataApiRequest.SYNCHRONOUS_ASYNC_AFTER_VALUE) {
+        } else if (asyncAfter == DataApiRequestImpl.SYNCHRONOUS_ASYNC_AFTER_VALUE) {
             payloadEmitter = queryResultsEmitter.map(Either::<PreResponse, JobRow>left).publish();
         } else {
             payloadEmitter = queryResultsEmitter

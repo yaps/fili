@@ -69,6 +69,9 @@ import java.util.stream.Stream;
  * API Request. Abstract class offering default implementations for the common components of API request objects.
  */
 public abstract class ApiRequestImpl implements ApiRequest {
+    public static final long SYNCHRONOUS_ASYNC_AFTER_VALUE = Long.MAX_VALUE;
+    public static final long ASYNCHRONOUS_ASYNC_AFTER_VALUE = -1;
+    public static final String COMMA_AFTER_BRACKET_PATTERN = "(?<=]),";
     private static final Logger LOG = LoggerFactory.getLogger(ApiRequestImpl.class);
     private static final SystemConfig SYSTEM_CONFIG = SystemConfigProvider.getInstance();
 

@@ -8,8 +8,6 @@ import com.yahoo.bard.webservice.util.Pagination;
 import com.yahoo.bard.webservice.web.util.PaginationParameters;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormatter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -21,11 +19,6 @@ import java.util.stream.Stream;
  * API Request. Interface offering default implementations for the common components of API request objects.
  */
 public interface ApiRequest {
-    long SYNCHRONOUS_ASYNC_AFTER_VALUE = Long.MAX_VALUE;
-    long ASYNCHRONOUS_ASYNC_AFTER_VALUE = -1;
-    Logger LOG = LoggerFactory.getLogger(ApiRequest.class);
-    String COMMA_AFTER_BRACKET_PATTERN = "(?<=]),";
-
     /**
      * Get the DateTimeFormatter shifted to the given time zone.
      *
