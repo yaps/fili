@@ -2,6 +2,21 @@
 // Licensed under the terms of the Apache license. Please see LICENSE.md file distributed with this work for terms.
 package com.yahoo.bard.webservice.web;
 
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.UNKNOWN_GRANULARITY;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.DIMENSIONS_UNDEFINED;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.DIMENSIONS_NOT_IN_TABLE;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.METRICS_NOT_IN_TABLE;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INTERVAL_MISSING;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INTERVAL_INVALID;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INTERVAL_ZERO_LENGTH;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INVALID_INTERVAL_GRANULARITY;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INVALID_TIME_ZONE;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.TIME_ALIGNMENT;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.ACCEPT_FORMAT_INVALID;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INVALID_ASYNC_AFTER;
+import static com.yahoo.bard.webservice.web.ErrorMessageFormat.FILTER_DIMENSION_NOT_IN_TABLE;
+
+import com.yahoo.bard.webservice.config.BardFeatureFlag;
 import com.yahoo.bard.webservice.config.SystemConfig;
 import com.yahoo.bard.webservice.config.SystemConfigProvider;
 import com.yahoo.bard.webservice.data.dimension.Dimension;
@@ -44,22 +59,11 @@ import java.util.HashSet;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Collection;
+import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.UNKNOWN_GRANULARITY;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.DIMENSIONS_UNDEFINED;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.DIMENSIONS_NOT_IN_TABLE;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.METRICS_NOT_IN_TABLE;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INTERVAL_MISSING;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INTERVAL_INVALID;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INTERVAL_ZERO_LENGTH;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INVALID_INTERVAL_GRANULARITY;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INVALID_TIME_ZONE;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.TIME_ALIGNMENT;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.ACCEPT_FORMAT_INVALID;
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INVALID_ASYNC_AFTER;
 
 /**
  * API Request. Abstract class offering default implementations for the common components of API request objects.
@@ -415,6 +419,78 @@ public abstract class ApiRequestImpl implements ApiRequest {
                     throw new BadApiRequestException(INTERVAL_INVALID.format(apiIntervalQuery, internalMessage), iae);
                 }
             }
+            return generated;
+        }
+    }
+
+    /**
+     * Generates filter objects on the based on the filter query in the api request.
+     *
+     * @param filterQuery  Expects a URL filter query String in the format:
+     * (dimension name).(fieldname)-(operation):[?(value or comma separated values)]?
+     * @param table  The logical table for the data request
+     * @param dimensionDictionary  DimensionDictionary
+     *
+     * @return Set of filter objects.
+     * @throws BadApiRequestException if the filter query string does not match required syntax, or the filter
+     * contains a 'startsWith' or 'contains' operation while the BardFeatureFlag.DATA_STARTS_WITH_CONTAINS_ENABLED is
+     * off.
+     */
+    protected Map<Dimension, Set<ApiFilter>> generateFilters(
+            String filterQuery,
+            LogicalTable table,
+            DimensionDictionary dimensionDictionary
+    ) throws BadApiRequestException {
+        try (TimedPhase timer = RequestLog.startTiming("GeneratingFilters")) {
+            LOG.trace("Dimension Dictionary: {}", dimensionDictionary);
+            // Set of filter objects
+            Map<Dimension, Set<ApiFilter>> generated = new LinkedHashMap<>();
+
+            // Filters are optional hence check if filters are requested.
+            if (filterQuery == null || "".equals(filterQuery)) {
+                return generated;
+            }
+
+            // split on '],' to get list of filters
+            List<String> apiFilters = Arrays.asList(filterQuery.split(COMMA_AFTER_BRACKET_PATTERN));
+            for (String apiFilter : apiFilters) {
+                ApiFilter newFilter;
+                try {
+                    newFilter = new ApiFilter(apiFilter, dimensionDictionary);
+
+                    // If there is a logical table and the filter is not part of it, throw exception.
+                    if (! table.getDimensions().contains(newFilter.getDimension())) {
+                        String filterDimensionName = newFilter.getDimension().getApiName();
+                        LOG.debug(FILTER_DIMENSION_NOT_IN_TABLE.logFormat(filterDimensionName, table));
+                        throw new BadFilterException(
+                                FILTER_DIMENSION_NOT_IN_TABLE.format(filterDimensionName, table.getName())
+                        );
+                    }
+
+                } catch (BadFilterException filterException) {
+                    throw new BadApiRequestException(filterException.getMessage(), filterException);
+                }
+
+                if (!BardFeatureFlag.DATA_FILTER_SUBSTRING_OPERATIONS.isOn()) {
+                    FilterOperation filterOperation = newFilter.getOperation();
+                    if (filterOperation.equals(FilterOperation.startswith)
+                            || filterOperation.equals(FilterOperation.contains)
+                            ) {
+                        throw new BadApiRequestException(
+                                ErrorMessageFormat.FILTER_SUBSTRING_OPERATIONS_DISABLED.format()
+                        );
+
+                    }
+                }
+                Dimension dim = newFilter.getDimension();
+                if (!generated.containsKey(dim)) {
+                    generated.put(dim, new LinkedHashSet<>());
+                }
+                Set<ApiFilter> filterSet = generated.get(dim);
+                filterSet.add(newFilter);
+            }
+            LOG.trace("Generated map of filters: {}", generated);
+
             return generated;
         }
     }

@@ -2,6 +2,13 @@
 // Licensed under the terms of the Apache license. Please see LICENSE.md file distributed with this work for terms.
 package com.yahoo.bard.webservice.data
 
+import static com.yahoo.bard.webservice.config.BardFeatureFlag.TOP_N
+import static com.yahoo.bard.webservice.data.time.DefaultTimeGrain.DAY
+import static com.yahoo.bard.webservice.data.time.DefaultTimeGrain.HOUR
+import static com.yahoo.bard.webservice.data.time.DefaultTimeGrain.WEEK
+import static com.yahoo.bard.webservice.data.time.DefaultTimeGrain.YEAR
+import static org.joda.time.DateTimeZone.UTC
+
 import com.yahoo.bard.webservice.data.filterbuilders.DefaultDruidFilterBuilder
 import com.yahoo.bard.webservice.data.filterbuilders.DruidFilterBuilder
 import com.yahoo.bard.webservice.data.metric.LogicalMetric
@@ -34,13 +41,6 @@ import org.joda.time.Interval
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
-
-import static com.yahoo.bard.webservice.config.BardFeatureFlag.TOP_N
-import static com.yahoo.bard.webservice.data.time.DefaultTimeGrain.DAY
-import static com.yahoo.bard.webservice.data.time.DefaultTimeGrain.HOUR
-import static com.yahoo.bard.webservice.data.time.DefaultTimeGrain.WEEK
-import static com.yahoo.bard.webservice.data.time.DefaultTimeGrain.YEAR
-import static org.joda.time.DateTimeZone.UTC
 
 class DruidQueryBuilderSpec extends Specification {
 
