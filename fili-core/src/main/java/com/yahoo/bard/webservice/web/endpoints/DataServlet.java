@@ -45,8 +45,8 @@ import com.yahoo.bard.webservice.table.LogicalTable;
 import com.yahoo.bard.webservice.table.resolver.NoMatchFoundException;
 import com.yahoo.bard.webservice.util.Either;
 import com.yahoo.bard.webservice.web.ApiRequest;
-import com.yahoo.bard.webservice.web.DataApiRequestImpl;
 import com.yahoo.bard.webservice.web.DataApiRequest;
+import com.yahoo.bard.webservice.web.DataApiRequestImpl;
 import com.yahoo.bard.webservice.web.PreResponse;
 import com.yahoo.bard.webservice.web.RequestMapper;
 import com.yahoo.bard.webservice.web.RequestValidationException;
@@ -399,7 +399,7 @@ public class DataServlet extends CORSPreflightServlet implements BardConfigResou
             Subject<PreResponse, PreResponse> queryResultsEmitter = PublishSubject.create();
 
             setupAsynchronousWorkflows(
-                    (DataApiRequestImpl) apiRequest,
+                    (DataApiRequest) apiRequest,
                     queryResultsEmitter,
                     containerRequestContext,
                     asyncResponse,
@@ -468,9 +468,9 @@ public class DataServlet extends CORSPreflightServlet implements BardConfigResou
         // resources once per subscription. A connectable Observable's chain is only executed once
         // regardless of the number of subscriptions.
         ConnectableObservable<Either<PreResponse, JobRow>> payloadEmitter;
-        if (asyncAfter == DataApiRequestImpl.ASYNCHRONOUS_ASYNC_AFTER_VALUE) {
+        if (asyncAfter == DataApiRequest.ASYNCHRONOUS_ASYNC_AFTER_VALUE) {
             payloadEmitter = Observable.just(Either.<PreResponse, JobRow>right(jobMetadata)).publish();
-        } else if (asyncAfter == DataApiRequestImpl.SYNCHRONOUS_ASYNC_AFTER_VALUE) {
+        } else if (asyncAfter == DataApiRequest.SYNCHRONOUS_ASYNC_AFTER_VALUE) {
             payloadEmitter = queryResultsEmitter.map(Either::<PreResponse, JobRow>left).publish();
         } else {
             payloadEmitter = queryResultsEmitter

@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.container.ContainerRequestContext;
 
 /**
- * An abstract ApiRequestImpl Mapper that allows delegation to a subsequent mapper.
+ * An abstract ApiRequest Mapper that allows delegation to a subsequent mapper.
  *
  * @param <T> Type of API Request this RequestMapper will work on
  */

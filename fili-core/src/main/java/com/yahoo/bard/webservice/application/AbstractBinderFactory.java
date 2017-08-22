@@ -273,6 +273,7 @@ public abstract class AbstractBinderFactory implements BinderFactory {
                 bind(getMappers().getMapper()).to(ObjectMapper.class);
 
                 bind(getWorkflow()).to(RequestWorkflowProvider.class);
+                bind(getDataApiRequest()).to(DataApiRequest.class);
                 bind(getPhysicalTableResolver()).to(PhysicalTableResolver.class);
                 bind(PartialDataHandler.class).to(PartialDataHandler.class);
                 bind(getVolatileIntervalsService()).to(VolatileIntervalsService.class);
@@ -748,6 +749,15 @@ public abstract class AbstractBinderFactory implements BinderFactory {
      */
     protected Class<? extends RequestWorkflowProvider> getWorkflow() {
         return DruidWorkflow.class;
+    }
+
+    /**
+     * Return a DataApiRequest class to bind to DataApiRequest.
+     *
+     * @return a DataApiRequest class
+     */
+    protected Class<? extends DataApiRequest> getDataApiRequest() {
+        return DataApiRequest.class;
     }
 
     /**

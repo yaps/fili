@@ -14,7 +14,7 @@ import com.yahoo.bard.webservice.data.metric.LogicalMetric
 import com.yahoo.bard.webservice.data.metric.MetricColumn
 import com.yahoo.bard.webservice.data.metric.mappers.ResultSetMapper
 import com.yahoo.bard.webservice.druid.model.query.DruidAggregationQuery
-import com.yahoo.bard.webservice.web.DataApiRequestImpl
+import com.yahoo.bard.webservice.web.DataApiRequest
 import com.yahoo.bard.webservice.web.JsonResponseWriter
 import com.yahoo.bard.webservice.web.PreResponse
 import com.yahoo.bard.webservice.web.ResponseFormatType
@@ -35,7 +35,7 @@ import javax.ws.rs.core.UriInfo
 class HttpResponseMakerSpec extends Specification {
     private static final ObjectMappersSuite MAPPERS = new ObjectMappersSuite()
 
-    DataApiRequestImpl apiRequest
+    DataApiRequest apiRequest
     HttpResponseChannel httpResponseChannel
     DruidResponseParser druidResponseParser
     UriInfo uriInfo
@@ -49,7 +49,7 @@ class HttpResponseMakerSpec extends Specification {
     ResponseWriter responseWriter
 
     def setup() {
-        apiRequest = Mock(DataApiRequestImpl)
+        apiRequest = Mock(DataApiRequest)
         druidResponseParser = Mock(DruidResponseParser)
         uriInfo = Mock(UriInfo)
         pathSegment = Mock(PathSegment)

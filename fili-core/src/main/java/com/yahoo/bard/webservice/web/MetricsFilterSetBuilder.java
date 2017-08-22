@@ -59,7 +59,7 @@ public interface MetricsFilterSetBuilder {
             JsonNode metricFilterObject,
             DimensionDictionary dimensionDictionary,
             LogicalTable table,
-            DataApiRequestImpl apiRequest
+            DataApiRequest apiRequest
     ) throws DimensionRowNotFoundException;
 
     /**
@@ -128,7 +128,7 @@ public interface MetricsFilterSetBuilder {
             JsonNode metricFilterObject,
             DimensionDictionary dimensionDictionary,
             LogicalTable table,
-            DataApiRequestImpl apiRequest
+            DataApiRequest apiRequest
     ) throws DimensionRowNotFoundException;
 
     /**
@@ -181,7 +181,7 @@ public interface MetricsFilterSetBuilder {
             Aggregation aggregation,
             DimensionDictionary dimensionDictionary,
             LogicalTable table,
-            DataApiRequestImpl apiRequest
+            DataApiRequest apiRequest
     ) throws DimensionRowNotFoundException;
 
     /**

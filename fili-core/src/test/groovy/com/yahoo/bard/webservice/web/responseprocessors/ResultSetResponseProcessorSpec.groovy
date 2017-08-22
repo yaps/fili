@@ -35,7 +35,7 @@ import com.yahoo.bard.webservice.logging.RequestLog
 import com.yahoo.bard.webservice.metadata.DataSourceMetadataService
 import com.yahoo.bard.webservice.table.Schema
 import com.yahoo.bard.webservice.table.TableTestUtils
-import com.yahoo.bard.webservice.web.DataApiRequestImpl
+import com.yahoo.bard.webservice.web.DataApiRequest
 import com.yahoo.bard.webservice.web.JsonResponseWriter
 import com.yahoo.bard.webservice.web.ResponseFormatType
 import com.yahoo.bard.webservice.web.ResponseWriter
@@ -59,7 +59,7 @@ class ResultSetResponseProcessorSpec extends Specification {
     HttpResponseMaker httpResponseMaker
     ResponseWriter responseWriter
     GroupByQuery groupByQuery
-    DataApiRequestImpl apiRequest
+    DataApiRequest apiRequest
     HttpResponseChannel httpResponseChannel
     Subject responseEmitter
     DruidResponseParser druidResponseParser
@@ -84,7 +84,7 @@ class ResultSetResponseProcessorSpec extends Specification {
     def setup() {
         groupByQuery = Mock(GroupByQuery)
         AsyncResponse asyncResponse = Mock(AsyncResponse)
-        apiRequest = Mock(DataApiRequestImpl)
+        apiRequest = Mock(DataApiRequest)
         druidResponseParser = Mock(DruidResponseParser)
         uriInfo = Mock(UriInfo)
         pathSegment = Mock(PathSegment)

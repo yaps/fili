@@ -2,9 +2,8 @@
 // Licensed under the terms of the Apache license. Please see LICENSE.md file distributed with this work for terms.
 package com.yahoo.bard.webservice.web;
 
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.HAVING_METRICS_NOT_IN_QUERY_FORMAT;
-
 import com.yahoo.bard.webservice.data.dimension.Dimension;
+import com.yahoo.bard.webservice.data.dimension.DimensionDictionary;
 import com.yahoo.bard.webservice.data.dimension.DimensionField;
 import com.yahoo.bard.webservice.data.filterbuilders.DruidFilterBuilder;
 import com.yahoo.bard.webservice.data.metric.LogicalMetric;
@@ -14,25 +13,20 @@ import com.yahoo.bard.webservice.druid.model.filter.Filter;
 import com.yahoo.bard.webservice.druid.model.having.Having;
 import com.yahoo.bard.webservice.druid.model.orderby.OrderByColumn;
 import com.yahoo.bard.webservice.druid.model.query.Granularity;
-import com.yahoo.bard.webservice.logging.RequestLog;
-import com.yahoo.bard.webservice.logging.TimedPhase;
 import com.yahoo.bard.webservice.table.LogicalTable;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.Map;
-import java.util.OptionalInt;
 import java.util.LinkedHashMap;
-import java.util.Collections;
-import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -184,6 +178,22 @@ import java.util.function.Predicate;
      Map<Dimension, Set<ApiFilter>> getFilters();
 
     /**
+     * Generates filter objects on the based on the filter query in the api request.
+     *
+     * @param filterQuery  Expects a URL filter query String in the format:
+     * (dimension name).(fieldname)-(operation):[?(value or comma separated values)]?
+     * @param table  The logical table for the data request
+     * @param dimensionDictionary  DimensionDictionary
+     *
+     * @return Set of filter objects.
+     */
+     Map<Dimension, Set<ApiFilter>> generateFilters(
+            String filterQuery,
+            LogicalTable table,
+            DimensionDictionary dimensionDictionary
+    );
+
+    /**
      * Generates having objects based on the having query in the api request.
      *
      * @param havingQuery  Expects a URL having query String in the format:
@@ -192,54 +202,12 @@ import java.util.function.Predicate;
      * @param metricDictionary  The metric dictionary to bind parsed metrics from the query
      *
      * @return Set of having objects.
-     *
-     * @throws BadApiRequestException if the having query string does not match required syntax.
      */
-    default Map<LogicalMetric, Set<ApiHaving>> generateHavings(
+     Map<LogicalMetric, Set<ApiHaving>> generateHavings(
             String havingQuery,
             Set<LogicalMetric> logicalMetrics,
             MetricDictionary metricDictionary
-    ) throws BadApiRequestException {
-        try (TimedPhase phase = RequestLog.startTiming("GeneratingHavings")) {
-            LOG.trace("Metric Dictionary: {}", metricDictionary);
-            // Havings are optional hence check if havings are requested.
-            if (havingQuery == null || "".equals(havingQuery)) {
-                return Collections.emptyMap();
-            }
-
-            List<String> unmatchedMetrics = new ArrayList<>();
-
-            // split on '],' to get list of havings
-            List<String> apiHavings = Arrays.asList(havingQuery.split(COMMA_AFTER_BRACKET_PATTERN));
-            Map<LogicalMetric, Set<ApiHaving>> generated = new LinkedHashMap<>();
-            for (String apiHaving : apiHavings) {
-                try {
-                    ApiHaving newHaving = new ApiHaving(apiHaving, metricDictionary);
-                    LogicalMetric metric = newHaving.getMetric();
-                    if (!logicalMetrics.contains(metric)) {
-                        unmatchedMetrics.add(metric.getName());
-                    } else {
-                        generated.putIfAbsent(metric, new LinkedHashSet<>());
-                        generated.get(metric).add(newHaving);
-                    }
-                } catch (BadHavingException havingException) {
-                    throw new BadApiRequestException(havingException.getMessage(), havingException);
-                }
-            }
-
-            if (!unmatchedMetrics.isEmpty()) {
-                LOG.debug(HAVING_METRICS_NOT_IN_QUERY_FORMAT.logFormat(unmatchedMetrics.toString()));
-                throw new BadApiRequestException(
-                        HAVING_METRICS_NOT_IN_QUERY_FORMAT.format(unmatchedMetrics.toString())
-                );
-
-            }
-
-            LOG.trace("Generated map of havings: {}", generated);
-
-            return generated;
-        }
-    }
+    );
 
     /**
      * Generate current date based on granularity.
