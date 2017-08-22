@@ -7,8 +7,9 @@ import com.yahoo.bard.webservice.web.ApiRequest;
 import com.yahoo.bard.webservice.web.RequestMapper;
 import com.yahoo.bard.webservice.web.RequestValidationException;
 
-import javax.ws.rs.container.ContainerRequestContext;
 import java.util.function.BiFunction;
+
+import javax.ws.rs.container.ContainerRequestContext;
 
 /**
  * A set of methods for generating utility mappers for ApiRequestMapping chains.

@@ -9,11 +9,12 @@ import com.yahoo.bard.webservice.web.util.PaginationParameters;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormatter;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 /**
  * API Request. Interface offering default implementations for the common components of API request objects.

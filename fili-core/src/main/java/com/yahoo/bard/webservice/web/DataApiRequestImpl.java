@@ -51,11 +51,6 @@ import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.validation.constraints.NotNull;
-import javax.ws.rs.core.PathSegment;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
 import java.util.Optional;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -68,6 +63,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.OptionalInt;
 import java.util.stream.Collectors;
+
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.core.PathSegment;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 /**
  * Data API Request. Such an API Request binds, validates, and models the parts of a request to the data endpoint.

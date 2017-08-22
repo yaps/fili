@@ -7,10 +7,11 @@ import com.yahoo.bard.webservice.web.ApiRequest;
 import com.yahoo.bard.webservice.web.RequestMapper;
 import com.yahoo.bard.webservice.web.RequestValidationException;
 
+import java.util.LinkedHashMap;
+
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.SecurityContext;
-import java.util.LinkedHashMap;
 
 /**
  * A RequestMapper that delegates to the first request mapper in a list which the user has a supporting role for.

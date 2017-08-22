@@ -8,13 +8,14 @@ import com.yahoo.bard.webservice.web.CsvResponse;
 import com.yahoo.bard.webservice.web.JsonResponse;
 import com.yahoo.bard.webservice.web.util.ResponseFormat;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 import javax.inject.Inject;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
-import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * Abstract class making available the common code between the servlets that serve the endpoints.

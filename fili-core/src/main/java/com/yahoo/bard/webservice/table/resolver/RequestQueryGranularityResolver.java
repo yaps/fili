@@ -18,8 +18,7 @@ import java.util.function.BiFunction;
  * A function to take an ApiRequest and TemplateDruidQuery and determine a Granularity which must be satisfied by a
  * fact source in order to satisfy this request.
  */
-public class RequestQueryGranularityResolver implements BiFunction<DataApiRequest, TemplateDruidQuery,
-        Granularity> {
+public class RequestQueryGranularityResolver implements BiFunction<DataApiRequest, TemplateDruidQuery, Granularity> {
 
     private static final Logger LOG = LoggerFactory.getLogger(RequestQueryGranularityResolver.class);
 
