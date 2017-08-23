@@ -402,7 +402,7 @@ public class DataServlet extends CORSPreflightServlet implements BardConfigResou
             Subject<PreResponse, PreResponse> queryResultsEmitter = PublishSubject.create();
 
             setupAsynchronousWorkflows(
-                    (DataApiRequest) apiRequest,
+                    apiRequest,
                     queryResultsEmitter,
                     containerRequestContext,
                     asyncResponse,
