@@ -3,6 +3,7 @@
 package com.yahoo.bard.webservice.web.security
 
 import com.yahoo.bard.webservice.data.config.ResourceDictionaries
+import com.yahoo.bard.webservice.web.ApiRequest
 import com.yahoo.bard.webservice.web.ApiRequestImpl
 import com.yahoo.bard.webservice.web.RequestMapper
 import com.yahoo.bard.webservice.web.RequestValidationException
@@ -24,9 +25,9 @@ class ChainingRequestMapperSpec extends Specification {
         1 * nextMapper.apply(mockRequest, containerRequestContext) >> mockRequest
 
         ChainingRequestMapper instance = new ChainingRequestMapper(resourceDictionaries, nextMapper) {
-            ApiRequestImpl internalApply(final ApiRequestImpl request, final ContainerRequestContext context)
+            ApiRequest internalApply(final ApiRequest request, final ContainerRequestContext context)
                     throws RequestValidationException {
-                return (ApiRequestImpl) mockRequest.clone()
+                return mockRequest.clone()
             }
         }
 

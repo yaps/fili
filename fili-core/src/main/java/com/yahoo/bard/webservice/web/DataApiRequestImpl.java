@@ -32,6 +32,7 @@ import com.yahoo.bard.webservice.data.filterbuilders.DruidFilterBuilder;
 import com.yahoo.bard.webservice.data.metric.LogicalMetric;
 import com.yahoo.bard.webservice.data.metric.MetricDictionary;
 import com.yahoo.bard.webservice.data.time.GranularityParser;
+import com.yahoo.bard.webservice.data.time.TimeGrain;
 import com.yahoo.bard.webservice.druid.model.filter.Filter;
 import com.yahoo.bard.webservice.druid.model.having.Having;
 import com.yahoo.bard.webservice.druid.model.orderby.OrderByColumn;
@@ -45,6 +46,8 @@ import com.yahoo.bard.webservice.table.TableIdentifier;
 import com.yahoo.bard.webservice.util.StreamUtils;
 import com.yahoo.bard.webservice.web.util.BardConfigResources;
 import com.yahoo.bard.webservice.web.util.PaginationParameters;
+
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.format.DateTimeFormatter;
@@ -62,6 +65,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.OptionalInt;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
@@ -74,9 +78,7 @@ import javax.ws.rs.core.UriInfo;
  */
 public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest {
     private static final Logger LOG = LoggerFactory.getLogger(DataApiRequestImpl.class);
-    private static final String RATIO_METRIC_CATEGORY = "Ratios";
-    private static final String DATE_TIME_STRING = "dateTime";
-
+    private static final String COMMA_AFTER_BRACKET_PATTERN = "(?<=]),";
     private final LogicalTable table;
 
     private final Granularity granularity;
@@ -576,6 +578,25 @@ public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest
     }
 
     /**
+     * Validity rules for non-aggregatable dimensions that are only referenced in filters.
+     * A query that references a non-aggregatable dimension in a filter without grouping by this dimension, is valid
+     * only if the requested dimension field is a key for this dimension and only a single value is requested
+     * with an inclusive operator ('in' or 'eq').
+     *
+     * @return A predicate that determines a given dimension is non aggregatable and also not constrained to one row
+     * per result
+     */
+    public static Predicate<ApiFilter> isNonAggregatableInFilter() {
+        return apiFilter ->
+                !apiFilter.getDimensionField().equals(apiFilter.getDimension().getKey()) ||
+                        apiFilter.getValues().size() != 1 ||
+                        !(
+                                apiFilter.getOperation().equals(FilterOperation.in) ||
+                                        apiFilter.getOperation().equals(FilterOperation.eq)
+                        );
+    }
+
+    /**
      * Extracts the list of metrics from the url metric query string and generates a set of LogicalMetrics.
      *
      * @param apiMetricQuery  URL query string containing the metrics separated by ','.
@@ -703,6 +724,18 @@ public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest
     }
 
     /**
+     * Generate current date based on granularity.
+     *
+     * @param dateTime  The current moment as a DateTime
+     * @param timeGrain  The time grain used to round the date time
+     *
+     * @return truncated current date based on granularity
+     */
+    protected DateTime getCurrentDate(DateTime dateTime, TimeGrain timeGrain) {
+        return timeGrain.roundFloor(dateTime);
+    }
+
+    /**
      * Extract valid sort direction.
      *
      * @param columnWithDirection  Column and its sorting direction
@@ -811,7 +844,7 @@ public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest
             List<String> unmatchedMetrics = new ArrayList<>();
 
             // split on '],' to get list of havings
-            List<String> apiHavings = Arrays.asList(havingQuery.split(DataApiRequest.COMMA_AFTER_BRACKET_PATTERN));
+            List<String> apiHavings = Arrays.asList(havingQuery.split(COMMA_AFTER_BRACKET_PATTERN));
             Map<LogicalMetric, Set<ApiHaving>> generated = new LinkedHashMap<>();
             for (String apiHaving : apiHavings) {
                 try {

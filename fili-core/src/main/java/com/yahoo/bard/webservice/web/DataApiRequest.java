@@ -8,18 +8,15 @@ import com.yahoo.bard.webservice.data.dimension.DimensionField;
 import com.yahoo.bard.webservice.data.filterbuilders.DruidFilterBuilder;
 import com.yahoo.bard.webservice.data.metric.LogicalMetric;
 import com.yahoo.bard.webservice.data.metric.MetricDictionary;
-import com.yahoo.bard.webservice.data.time.TimeGrain;
 import com.yahoo.bard.webservice.druid.model.filter.Filter;
 import com.yahoo.bard.webservice.druid.model.having.Having;
 import com.yahoo.bard.webservice.druid.model.orderby.OrderByColumn;
 import com.yahoo.bard.webservice.druid.model.query.Granularity;
 import com.yahoo.bard.webservice.table.LogicalTable;
+import com.yahoo.bard.webservice.web.util.PaginationParameters;
 
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -27,34 +24,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
-import java.util.function.Predicate;
+
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 /**
  * Data API Request. Such an API Request binds, validates, and models the parts of a request to the data endpoint.
  */
  public interface DataApiRequest extends ApiRequest {
     String REQUEST_MAPPER_NAMESPACE = "dataApiRequestMapper";
-    Logger LOG = LoggerFactory.getLogger(DataApiRequest.class);
-    String COMMA_AFTER_BRACKET_PATTERN = "(?<=]),";
-
-    /**
-     * Validity rules for non-aggregatable dimensions that are only referenced in filters.
-     * A query that references a non-aggregatable dimension in a filter without grouping by this dimension, is valid
-     * only if the requested dimension field is a key for this dimension and only a single value is requested
-     * with an inclusive operator ('in' or 'eq').
-     *
-     * @return A predicate that determines a given dimension is non aggregatable and also not constrained to one row
-     * per result
-     */
-     default Predicate<ApiFilter> isNonAggregatableInFilter() {
-        return apiFilter ->
-                !apiFilter.getDimensionField().equals(apiFilter.getDimension().getKey()) ||
-                        apiFilter.getValues().size() != 1 ||
-                        !(
-                                apiFilter.getOperation().equals(FilterOperation.in) ||
-                                        apiFilter.getOperation().equals(FilterOperation.eq)
-                        );
-    }
+    String RATIO_METRIC_CATEGORY = "Ratios";
+    String DATE_TIME_STRING = "dateTime";
 
     /**
      * Builds and returns the Druid filters from this request's {@link ApiFilter}s.
@@ -209,15 +189,43 @@ import java.util.function.Predicate;
             MetricDictionary metricDictionary
     );
 
-    /**
-     * Generate current date based on granularity.
-     *
-     * @param dateTime  The current moment as a DateTime
-     * @param timeGrain  The time grain used to round the date time
-     *
-     * @return truncated current date based on granularity
-     */
-     default DateTime getCurrentDate(DateTime dateTime, TimeGrain timeGrain) {
-        return timeGrain.roundFloor(dateTime);
-    }
+    // CHECKSTYLE:OFF
+    DataApiRequestImpl withFormat(ResponseFormatType format);
+
+    DataApiRequestImpl withPaginationParameters(Optional<PaginationParameters> paginationParameters);
+
+    DataApiRequestImpl withUriInfo(UriInfo uriInfo);
+
+    DataApiRequestImpl withBuilder(Response.ResponseBuilder builder);
+
+    DataApiRequestImpl withTable(LogicalTable table);
+
+    DataApiRequestImpl withGranularity(Granularity granularity);
+
+    DataApiRequestImpl withDimensions(Set<Dimension> dimensions);
+
+    DataApiRequestImpl withPerDimensionFields(LinkedHashMap<Dimension,
+            LinkedHashSet<DimensionField>> perDimensionFields);
+
+    DataApiRequestImpl withLogicalMetrics(Set<LogicalMetric> logicalMetrics);
+
+    DataApiRequestImpl withIntervals(Set<Interval> intervals);
+
+    DataApiRequestImpl withFilters(Map<Dimension, Set<ApiFilter>> filters);
+
+    DataApiRequestImpl withHavings(Map<LogicalMetric, Set<ApiHaving>> havings);
+
+    DataApiRequestImpl withHaving(Having having);
+
+    DataApiRequestImpl withSorts(LinkedHashSet<OrderByColumn> sorts);
+
+    DataApiRequestImpl withCount(int count);
+
+    DataApiRequestImpl withTopN(int topN);
+
+    DataApiRequestImpl withAsyncAfter(long asyncAfter);
+
+    DataApiRequestImpl withTimeZone(DateTimeZone timeZone);
+
+    DataApiRequestImpl withFilterBuilder(DruidFilterBuilder filterBuilder);
 }

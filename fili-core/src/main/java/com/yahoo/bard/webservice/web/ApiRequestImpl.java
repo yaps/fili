@@ -73,6 +73,7 @@ import javax.ws.rs.core.UriInfo;
 public abstract class ApiRequestImpl implements ApiRequest {
     private static final Logger LOG = LoggerFactory.getLogger(ApiRequestImpl.class);
     private static final SystemConfig SYSTEM_CONFIG = SystemConfigProvider.getInstance();
+    protected static final String COMMA_AFTER_BRACKET_PATTERN = "(?<=]),";
 
     private static final int DEFAULT_PER_PAGE = SYSTEM_CONFIG.getIntProperty(
             SYSTEM_CONFIG.getPackageVariableName("default_per_page")
