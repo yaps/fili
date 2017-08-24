@@ -9,6 +9,7 @@ import com.yahoo.bard.webservice.druid.model.query.QueryContext
 import com.yahoo.bard.webservice.web.DataApiRequest
 import com.yahoo.bard.webservice.web.responseprocessors.DruidPartialDataResponseProcessor
 import com.yahoo.bard.webservice.web.responseprocessors.ResponseProcessor
+
 import spock.lang.Specification
 
 class DruidPartialDataRequestHandlerSpec extends Specification {

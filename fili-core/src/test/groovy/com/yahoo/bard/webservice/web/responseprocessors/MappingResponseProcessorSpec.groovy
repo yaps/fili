@@ -18,8 +18,10 @@ import com.yahoo.bard.webservice.web.DataApiRequest
 import com.yahoo.bard.webservice.web.JsonResponseWriter
 import com.yahoo.bard.webservice.web.PreResponse
 import com.yahoo.bard.webservice.web.ResponseWriter
+
 import rx.subjects.PublishSubject
 import rx.subjects.Subject
+
 import spock.lang.Specification
 
 import javax.ws.rs.container.AsyncResponse
