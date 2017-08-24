@@ -6,6 +6,7 @@ import static com.yahoo.bard.webservice.util.DateTimeFormatterFactory.FULLY_OPTI
 
 import com.yahoo.bard.webservice.util.Pagination;
 import com.yahoo.bard.webservice.web.util.PaginationParameters;
+
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -22,6 +23,7 @@ import javax.ws.rs.core.UriInfo;
 public interface ApiRequest {
     long SYNCHRONOUS_ASYNC_AFTER_VALUE = Long.MAX_VALUE;
     long ASYNCHRONOUS_ASYNC_AFTER_VALUE = -1;
+    
     /**
      * Get the DateTimeFormatter shifted to the given time zone.
      *

@@ -8,8 +8,10 @@ import com.yahoo.bard.webservice.async.ResponseException;
 import com.yahoo.bard.webservice.logging.RequestLog;
 import com.yahoo.bard.webservice.web.ApiRequest;
 import com.yahoo.bard.webservice.web.PreResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import rx.Observer;
 
 import javax.ws.rs.container.AsyncResponse;
