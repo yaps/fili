@@ -255,7 +255,9 @@ public enum ErrorMessageFormat implements MessageFormatter {
     TOO_FEW_BACKING_DATA_SOURCES("TableDataSource built with insufficient backing data sources: %s"),
     HAVING_OPERATOR_WRONG_NUMBER_OF_PARAMETERS("Wrong number of parameters provided for %s operator. " +
                                               "%s operator needs %d parameters but found %d"),
-    HAVING_OPERATOR_IMPROPER_RANGE("Upper range cannot be less than the lower range for %s operator.")
+    HAVING_OPERATOR_IMPROPER_RANGE("Upper range cannot be less than the lower range for %s operator."),
+
+    CANNOT_CREATE_INDEX_DIR("Unable to create index directory %s.")
     ;
 
     private final String messageFormat;

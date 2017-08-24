@@ -18,6 +18,7 @@ import com.yahoo.bard.webservice.util.Pagination;
 import com.yahoo.bard.webservice.util.SinglePagePagination;
 import com.yahoo.bard.webservice.util.Utils;
 import com.yahoo.bard.webservice.web.ApiFilter;
+import com.yahoo.bard.webservice.web.ErrorMessageFormat;
 import com.yahoo.bard.webservice.web.PageNotFoundException;
 import com.yahoo.bard.webservice.web.RowLimitReachedException;
 import com.yahoo.bard.webservice.web.util.PaginationParameters;
@@ -70,7 +71,6 @@ public class LuceneSearchProvider implements SearchProvider {
     private static final double BUFFER_SIZE = 48;
 
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-    private final String luceneIndexPath;
 
     private static final SystemConfig SYSTEM_CONFIG = SystemConfigProvider.getInstance();
     public static final int LUCENE_SEARCH_TIMEOUT_MS = SYSTEM_CONFIG.getIntProperty(
@@ -83,6 +83,7 @@ public class LuceneSearchProvider implements SearchProvider {
     private int maxResults;
 
     private Directory luceneDirectory;
+    private String luceneIndexPath;
     private KeyValueStore keyValueStore;
     private Dimension dimension;
     private boolean luceneIndexIsHealthy;
@@ -108,11 +109,10 @@ public class LuceneSearchProvider implements SearchProvider {
             luceneIndexIsHealthy = true;
         } catch (IOException e) {
             luceneIndexIsHealthy = false;
-            String message = String.format("Unable to create index directory %s:", this.luceneIndexPath);
+            String message = ErrorMessageFormat.CANNOT_CREATE_INDEX_DIR.format(this.luceneIndexPath);
             LOG.error(message, e);
         }
     }
-
 
     /**
      * Constructor.  The search timeout is initialized to the default (or configured) value.
@@ -315,6 +315,24 @@ public class LuceneSearchProvider implements SearchProvider {
 
         // Update the document by the key term
         writer.updateDocument(keyTerm, luceneDimensionRowDoc);
+    }
+
+    /**
+     * Replace Lucene Index with a new index.
+     *
+     * @param newLuceneIndexPath  The path of the new index
+     */
+    public void replaceIndex(String newLuceneIndexPath) {
+        luceneIndexPath = newLuceneIndexPath;
+
+        try {
+            luceneDirectory = new MMapDirectory(Paths.get(luceneIndexPath));
+        } catch (IOException e) {
+            String message = ErrorMessageFormat.CANNOT_CREATE_INDEX_DIR.format(this.luceneIndexPath);
+            LOG.error(message, e);
+        }
+
+        reopenIndexSearcher(true);
     }
 
     /**
