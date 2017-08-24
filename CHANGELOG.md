@@ -10,6 +10,9 @@ Current
 
 ### Added:
 
+- [Enable Lucene search provider to swap index](https://github.com/yahoo/fili/pull/522)
+    * This allows user to put new Lucene index at a specific location and have Fili points to the new index.
+
 - [Add Uptime Status Metric](https://github.com/yahoo/fili/pull/518)
     * Add a metric to show how long Fili has been running 
 
