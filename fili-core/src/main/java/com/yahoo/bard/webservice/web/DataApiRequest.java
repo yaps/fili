@@ -7,7 +7,6 @@ import com.yahoo.bard.webservice.data.dimension.DimensionDictionary;
 import com.yahoo.bard.webservice.data.dimension.DimensionField;
 import com.yahoo.bard.webservice.data.filterbuilders.DruidFilterBuilder;
 import com.yahoo.bard.webservice.data.metric.LogicalMetric;
-import com.yahoo.bard.webservice.data.metric.MetricDictionary;
 import com.yahoo.bard.webservice.druid.model.filter.Filter;
 import com.yahoo.bard.webservice.druid.model.having.Having;
 import com.yahoo.bard.webservice.druid.model.orderby.OrderByColumn;
@@ -171,22 +170,6 @@ import javax.ws.rs.core.UriInfo;
             String filterQuery,
             LogicalTable table,
             DimensionDictionary dimensionDictionary
-    );
-
-    /**
-     * Generates having objects based on the having query in the api request.
-     *
-     * @param havingQuery  Expects a URL having query String in the format:
-     * (dimension name)-(operation)[(value or comma separated values)]?
-     * @param logicalMetrics  The logical metrics used in this query
-     * @param metricDictionary  The metric dictionary to bind parsed metrics from the query
-     *
-     * @return Set of having objects.
-     */
-     Map<LogicalMetric, Set<ApiHaving>> generateHavings(
-            String havingQuery,
-            Set<LogicalMetric> logicalMetrics,
-            MetricDictionary metricDictionary
     );
 
     // CHECKSTYLE:OFF

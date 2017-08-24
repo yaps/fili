@@ -5,6 +5,7 @@ package com.yahoo.bard.webservice.web.util;
 import com.yahoo.bard.webservice.data.config.ResourceDictionaries;
 import com.yahoo.bard.webservice.data.dimension.DimensionDictionary;
 import com.yahoo.bard.webservice.data.filterbuilders.DruidFilterBuilder;
+import com.yahoo.bard.webservice.data.havinggenerators.HavingGeneratorBuilder;
 import com.yahoo.bard.webservice.data.metric.MetricDictionary;
 import com.yahoo.bard.webservice.data.time.GranularityParser;
 import com.yahoo.bard.webservice.table.LogicalTableDictionary;
@@ -37,6 +38,13 @@ public interface BardConfigResources {
      * @return A filter builder resource
      */
     DruidFilterBuilder getFilterBuilder();
+
+    /**
+     * Having Api Builder.
+     *
+     * @return  A Having Generator Builder
+     */
+    HavingGeneratorBuilder getHavingApiBuilder();
 
     /**
      * The configured default time zone for dates.

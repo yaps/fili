@@ -53,6 +53,8 @@ import com.yahoo.bard.webservice.data.config.table.TableLoader;
 import com.yahoo.bard.webservice.data.dimension.DimensionDictionary;
 import com.yahoo.bard.webservice.data.filterbuilders.DefaultDruidFilterBuilder;
 import com.yahoo.bard.webservice.data.filterbuilders.DruidFilterBuilder;
+import com.yahoo.bard.webservice.data.havinggenerators.HavingGeneratorBuilder;
+import com.yahoo.bard.webservice.data.havinggenerators.DefaultHavingApiBuilder;
 import com.yahoo.bard.webservice.data.metric.MetricDictionary;
 import com.yahoo.bard.webservice.data.metric.TemplateDruidQueryMerger;
 import com.yahoo.bard.webservice.data.time.GranularityDictionary;
@@ -238,6 +240,7 @@ public abstract class AbstractBinderFactory implements BinderFactory {
                 bind(TemplateDruidQueryMerger.class).to(TemplateDruidQueryMerger.class);
                 bind(buildDruidResponseParser()).to(DruidResponseParser.class);
                 bind(buildDruidFilterBuilder()).to(DruidFilterBuilder.class);
+                bind(buildHavingGeneratorBuilderr()).to(HavingGeneratorBuilder.class);
 
                 //Initialize the field converter
                 FieldConverterSupplier.sketchConverter = initializeSketchConverter();
@@ -611,6 +614,16 @@ public abstract class AbstractBinderFactory implements BinderFactory {
      */
     protected DruidFilterBuilder buildDruidFilterBuilder() {
         return new DefaultDruidFilterBuilder();
+    }
+
+    /**
+     * Creates an object that generates map of Api Having from having string.
+     * Constructs a {@link DefaultHavingApiBuilder} by default.
+     *
+     * @return An object to generate having maps from having string.
+     */
+    protected HavingGeneratorBuilder buildHavingGeneratorBuilderr() {
+        return new DefaultHavingApiBuilder();
     }
 
     /**

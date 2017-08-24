@@ -2,7 +2,6 @@
 // Licensed under the terms of the Apache license. Please see LICENSE.md file distributed with this work for terms.
 package com.yahoo.bard.webservice.web;
 
-import static com.yahoo.bard.webservice.web.ErrorMessageFormat.HAVING_METRICS_NOT_IN_QUERY_FORMAT;
 import static com.yahoo.bard.webservice.web.ErrorMessageFormat.TABLE_UNDEFINED;
 import static com.yahoo.bard.webservice.web.ErrorMessageFormat.INTEGER_INVALID;
 import static com.yahoo.bard.webservice.web.ErrorMessageFormat.TOP_N_UNSORTED;
@@ -29,6 +28,7 @@ import com.yahoo.bard.webservice.data.dimension.DimensionField;
 import com.yahoo.bard.webservice.data.dimension.DimensionRowNotFoundException;
 import com.yahoo.bard.webservice.data.filterbuilders.DefaultDruidFilterBuilder;
 import com.yahoo.bard.webservice.data.filterbuilders.DruidFilterBuilder;
+import com.yahoo.bard.webservice.data.havinggenerators.HavingGeneratorBuilder;
 import com.yahoo.bard.webservice.data.metric.LogicalMetric;
 import com.yahoo.bard.webservice.data.metric.MetricDictionary;
 import com.yahoo.bard.webservice.data.time.GranularityParser;
@@ -97,6 +97,8 @@ public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest
     private final DateTimeZone timeZone;
 
     private final DruidFilterBuilder filterBuilder;
+
+    private final HavingGeneratorBuilder havingApiBuilder;
 
     private final Optional<OrderByColumn> dateTimeSort;
 
@@ -190,6 +192,8 @@ public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest
 
         this.filterBuilder = bardConfigResources.getFilterBuilder();
 
+        this.havingApiBuilder = bardConfigResources.getHavingApiBuilder();
+
         MetricDictionary metricDictionary = bardConfigResources
                 .getMetricDictionary()
                 .getScope(Collections.singletonList(tableName));
@@ -210,7 +214,7 @@ public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest
         validateRequestDimensions(this.filters.keySet(), this.table);
 
         // Zero or more having queries may be referenced
-        this.havings = generateHavings(havings, this.logicalMetrics,  metricDictionary);
+        this.havings = havingApiBuilder.generateHavings(havings, this.logicalMetrics, metricDictionary);
 
         this.having = DruidHavingBuilder.buildHavings(this.havings);
 
@@ -356,7 +360,7 @@ public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest
      * No argument constructor, meant to be used only for testing.
      */
     @ForTesting
-    protected DataApiRequestImpl() {
+    public DataApiRequestImpl() {
         super();
         this.table = null;
         this.granularity = null;
@@ -365,6 +369,7 @@ public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest
         this.logicalMetrics = null;
         this.intervals = null;
         this.filterBuilder = new DefaultDruidFilterBuilder();
+        this.havingApiBuilder = null;
         this.filters = null;
         this.havings = null;
         this.having = null;
@@ -396,7 +401,8 @@ public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest
      * @param asyncAfter  How long in milliseconds the user is willing to wait for a synchronous response
      * @param timeZone  TimeZone for the request
      * @param filterBuilder  A builder to use when building filters for the request
-     * @param dateTimeSort A dateTime sort column with its direction
+     * @param havingApiBuilder  A builder to generate havings map for the request
+     * @param dateTimeSort  A dateTime sort column with its direction
      */
     private DataApiRequestImpl(
             ResponseFormatType format,
@@ -418,6 +424,7 @@ public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest
             long asyncAfter,
             DateTimeZone timeZone,
             DruidFilterBuilder filterBuilder,
+            HavingGeneratorBuilder havingApiBuilder,
             Optional<OrderByColumn> dateTimeSort
     ) {
         super(format, asyncAfter, paginationParameters, uriInfo, builder);
@@ -435,6 +442,7 @@ public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest
         this.topN = topN;
         this.timeZone = timeZone;
         this.filterBuilder = filterBuilder;
+        this.havingApiBuilder = havingApiBuilder;
         this.dateTimeSort = dateTimeSort;
     }
 
@@ -818,64 +826,6 @@ public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest
     }
 
     /**
-     * Generates having objects based on the having query in the api request.
-     *
-     * @param havingQuery  Expects a URL having query String in the format:
-     * (dimension name)-(operation)[(value or comma separated values)]?
-     * @param logicalMetrics  The logical metrics used in this query
-     * @param metricDictionary  The metric dictionary to bind parsed metrics from the query
-     *
-     * @return Set of having objects.
-     *
-     * @throws BadApiRequestException if the having query string does not match required syntax.
-     */
-    public Map<LogicalMetric, Set<ApiHaving>> generateHavings(
-            String havingQuery,
-            Set<LogicalMetric> logicalMetrics,
-            MetricDictionary metricDictionary
-    ) throws BadApiRequestException {
-        try (TimedPhase phase = RequestLog.startTiming("GeneratingHavings")) {
-            LOG.trace("Metric Dictionary: {}", metricDictionary);
-            // Havings are optional hence check if havings are requested.
-            if (havingQuery == null || "".equals(havingQuery)) {
-                return Collections.emptyMap();
-            }
-
-            List<String> unmatchedMetrics = new ArrayList<>();
-
-            // split on '],' to get list of havings
-            List<String> apiHavings = Arrays.asList(havingQuery.split(COMMA_AFTER_BRACKET_PATTERN));
-            Map<LogicalMetric, Set<ApiHaving>> generated = new LinkedHashMap<>();
-            for (String apiHaving : apiHavings) {
-                try {
-                    ApiHaving newHaving = new ApiHaving(apiHaving, metricDictionary);
-                    LogicalMetric metric = newHaving.getMetric();
-                    if (!logicalMetrics.contains(metric)) {
-                        unmatchedMetrics.add(metric.getName());
-                    } else {
-                        generated.putIfAbsent(metric, new LinkedHashSet<>());
-                        generated.get(metric).add(newHaving);
-                    }
-                } catch (BadHavingException havingException) {
-                    throw new BadApiRequestException(havingException.getMessage(), havingException);
-                }
-            }
-
-            if (!unmatchedMetrics.isEmpty()) {
-                LOG.debug(HAVING_METRICS_NOT_IN_QUERY_FORMAT.logFormat(unmatchedMetrics.toString()));
-                throw new BadApiRequestException(
-                        HAVING_METRICS_NOT_IN_QUERY_FORMAT.format(unmatchedMetrics.toString())
-                );
-
-            }
-
-            LOG.trace("Generated map of havings: {}", generated);
-
-            return generated;
-        }
-    }
-
-    /**
      * Parses the requested input String by converting it to an integer, while treating null as zero.
      *
      * @param value  The requested integer value as String.
@@ -895,79 +845,83 @@ public class DataApiRequestImpl extends ApiRequestImpl implements DataApiRequest
 
     // CHECKSTYLE:OFF
     public DataApiRequestImpl withFormat(ResponseFormatType format) {
-        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, dateTimeSort);
+        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, havingApiBuilder, dateTimeSort);
     }
 
     public DataApiRequestImpl withPaginationParameters(Optional<PaginationParameters> paginationParameters) {
-        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, dateTimeSort);
+        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, havingApiBuilder, dateTimeSort);
     }
 
     public DataApiRequestImpl withUriInfo(UriInfo uriInfo) {
-        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, dateTimeSort);
+        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, havingApiBuilder, dateTimeSort);
     }
 
     public DataApiRequestImpl withBuilder(Response.ResponseBuilder builder) {
-        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, dateTimeSort);
+        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, havingApiBuilder, dateTimeSort);
     }
 
     public DataApiRequestImpl withTable(LogicalTable table) {
-        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, dateTimeSort);
+        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, havingApiBuilder, dateTimeSort);
     }
 
     public DataApiRequestImpl withGranularity(Granularity granularity) {
-        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, dateTimeSort);
+        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, havingApiBuilder, dateTimeSort);
     }
 
     public DataApiRequestImpl withDimensions(Set<Dimension> dimensions) {
-        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, dateTimeSort);
+        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, havingApiBuilder, dateTimeSort);
     }
 
     public DataApiRequestImpl withPerDimensionFields(LinkedHashMap<Dimension, LinkedHashSet<DimensionField>> perDimensionFields) {
-        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, dateTimeSort);
+        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, havingApiBuilder, dateTimeSort);
     }
 
     public DataApiRequestImpl withLogicalMetrics(Set<LogicalMetric> logicalMetrics) {
-        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, dateTimeSort);
+        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, havingApiBuilder, dateTimeSort);
     }
 
     public DataApiRequestImpl withIntervals(Set<Interval> intervals) {
-        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, dateTimeSort);
+        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, havingApiBuilder, dateTimeSort);
     }
 
     public DataApiRequestImpl withFilters(Map<Dimension, Set<ApiFilter>> filters) {
-        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, dateTimeSort);
+        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, havingApiBuilder, dateTimeSort);
     }
 
     public DataApiRequestImpl withHavings(Map<LogicalMetric, Set<ApiHaving>> havings) {
-        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, dateTimeSort);
+        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, havingApiBuilder, dateTimeSort);
     }
 
     public DataApiRequestImpl withHaving(Having having) {
-        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, dateTimeSort);
+        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, havingApiBuilder, dateTimeSort);
     }
 
     public DataApiRequestImpl withSorts(LinkedHashSet<OrderByColumn> sorts) {
-        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, dateTimeSort);
+        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, havingApiBuilder, dateTimeSort);
     }
 
     public DataApiRequestImpl withCount(int count) {
-        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, dateTimeSort);
+        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, havingApiBuilder, dateTimeSort);
     }
 
     public DataApiRequestImpl withTopN(int topN) {
-        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, dateTimeSort);
+        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, havingApiBuilder, dateTimeSort);
     }
 
     public DataApiRequestImpl withAsyncAfter(long asyncAfter) {
-        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, dateTimeSort);
+        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, havingApiBuilder, dateTimeSort);
     }
 
     public DataApiRequestImpl withTimeZone(DateTimeZone timeZone) {
-        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, dateTimeSort);
+        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, havingApiBuilder, dateTimeSort);
     }
 
     public DataApiRequestImpl withFilterBuilder(DruidFilterBuilder filterBuilder) {
-        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, dateTimeSort);
+        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, havingApiBuilder, dateTimeSort);
+    }
+
+    public DataApiRequestImpl withHavingApiBuilder(HavingGeneratorBuilder havingApiBuilder) {
+        return new DataApiRequestImpl(format, paginationParameters, uriInfo, builder, table, granularity, dimensions, perDimensionFields, logicalMetrics, intervals, filters, havings, having, sorts, count, topN, asyncAfter, timeZone, filterBuilder, havingApiBuilder, dateTimeSort);
     }
 
     // CHECKSTYLE:ON
