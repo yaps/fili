@@ -318,7 +318,7 @@ public class LuceneSearchProvider implements SearchProvider {
     }
 
     /**
-     * Replace Lucene Index with a new index.
+     * Replaces Lucene Index with a new index.
      *
      * @param newLuceneIndexPath  The path of the new index
      */
