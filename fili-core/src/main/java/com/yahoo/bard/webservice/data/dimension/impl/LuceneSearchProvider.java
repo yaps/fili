@@ -340,6 +340,7 @@ public class LuceneSearchProvider implements SearchProvider {
                 oldLuceneDirectory.rename(luceneIndexPath, luceneIndexPath + ".temp");
             } catch (IOException e) {
                 String message = ErrorMessageFormat.CANNOT_MOVE_INDEX_DIR.format(oldLuceneDirectory);
+                LOG.error(message, e);
             }
 
             // move the new dir to the old location
