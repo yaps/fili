@@ -18,7 +18,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 /**
- * API Request. Interface offering default implementations for the common components of API request objects.
+ * Interface offering default implementations for the common components of API request objects.
  */
 public interface ApiRequest {
     long SYNCHRONOUS_ASYNC_AFTER_VALUE = Long.MAX_VALUE;

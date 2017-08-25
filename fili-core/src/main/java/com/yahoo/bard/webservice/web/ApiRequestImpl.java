@@ -220,7 +220,7 @@ public abstract class ApiRequestImpl implements ApiRequest {
             return granularityParser.parseGranularity(granularity);
         } catch (GranularityParseException e) {
             LOG.error(UNKNOWN_GRANULARITY.logFormat(granularity), granularity);
-            throw new BadApiRequestException(e.getMessage());
+            throw new BadApiRequestException(e);
         }
     }
 
