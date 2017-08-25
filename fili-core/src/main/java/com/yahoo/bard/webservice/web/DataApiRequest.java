@@ -28,7 +28,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 /**
- * Data API Request. Such an API Request binds, validates, and models the parts of a request to the data endpoint.
+ * DataApiRequest Request binds, validates, and models the parts of a request to the data endpoint.
  */
  public interface DataApiRequest extends ApiRequest {
     String REQUEST_MAPPER_NAMESPACE = "dataApiRequestMapper";
