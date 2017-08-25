@@ -21,8 +21,10 @@ import com.yahoo.bard.webservice.web.ResponseFormatType
 import com.yahoo.bard.webservice.web.ResponseWriter
 import com.yahoo.bard.webservice.web.responseprocessors.ResponseContext
 import com.yahoo.bard.webservice.web.responseprocessors.ResultSetResponseProcessor
+
 import rx.subjects.PublishSubject
 import rx.subjects.Subject
+
 import spock.lang.Specification
 
 import javax.ws.rs.container.AsyncResponse
