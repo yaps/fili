@@ -4,7 +4,6 @@
 package com.yahoo.bard.webservice.data.havinggenerators;
 
 import com.yahoo.bard.webservice.data.metric.LogicalMetric;
-import com.yahoo.bard.webservice.data.metric.MetricDictionary;
 import com.yahoo.bard.webservice.web.ApiHaving;
 
 import java.util.Map;
