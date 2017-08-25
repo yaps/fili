@@ -323,16 +323,58 @@ public class LuceneSearchProvider implements SearchProvider {
      * @param newLuceneIndexPath  The path of the new index
      */
     public void replaceIndex(String newLuceneIndexPath) {
-        luceneIndexPath = newLuceneIndexPath;
+        Directory oldLuceneDirectory = luceneDirectory;
 
+        lock.writeLock().lock();
         try {
-            luceneDirectory = new MMapDirectory(Paths.get(luceneIndexPath));
-        } catch (IOException e) {
-            String message = ErrorMessageFormat.CANNOT_CREATE_INDEX_DIR.format(this.luceneIndexPath);
-            LOG.error(message, e);
+            // close old dir
+            try {
+                oldLuceneDirectory.close();
+            } catch (IOException e) {
+                String message = ErrorMessageFormat.CANNOT_CLOSE_INDEX_DIR.format(oldLuceneDirectory);
+                LOG.error(message, e);
+            }
+
+            // move the old dir to a different location
+            try {
+                oldLuceneDirectory.rename(luceneIndexPath, luceneIndexPath + ".temp");
+            } catch (IOException e) {
+                String message = ErrorMessageFormat.CANNOT_MOVE_INDEX_DIR.format(oldLuceneDirectory);
+            }
+
+            // move the new dir to the old location
+            try {
+                luceneDirectory = new MMapDirectory(Paths.get(newLuceneIndexPath));
+            } catch (IOException e) {
+                String message = ErrorMessageFormat.CANNOT_CREATE_INDEX_DIR.format(newLuceneIndexPath);
+                LOG.error(message, e);
+            }
+            try {
+                luceneDirectory.rename(newLuceneIndexPath, luceneIndexPath);
+            } catch (IOException e) {
+                String message = ErrorMessageFormat.CANNOT_CREATE_INDEX_DIR.format(newLuceneIndexPath);
+                LOG.error(message, e);
+            }
+
+            luceneIndexPath = newLuceneIndexPath;
+
+            //This must be outside the try-resources block because it may _also_ need to open an IndexWriter, and
+            //opening an IndexWriter involves taking a write lock on lucene, of which there can only be one at a time.
+            reopenIndexSearcher(true);
+        } finally {
+            lock.writeLock().unlock();
         }
 
-        reopenIndexSearcher(true);
+        // delete old dir
+        try (IndexWriter indexWriter = new IndexWriter(
+                oldLuceneDirectory,
+                new IndexWriterConfig(LUCENE_ANALYZER).setRAMBufferSizeMB(BUFFER_SIZE)
+        )) {
+            indexWriter.deleteAll();
+        } catch (IOException e) {
+            LOG.error(ErrorMessageFormat.FAIL_TO_WIPTE_LUCENE_INDEX_DIR.format(oldLuceneDirectory));
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -367,7 +409,7 @@ public class LuceneSearchProvider implements SearchProvider {
                 writer.deleteAll();
                 writer.commit();
             } catch (IOException e) {
-                LOG.error("Failed to wipe Lucene index at directory: {}", luceneDirectory);
+                LOG.error(ErrorMessageFormat.FAIL_TO_WIPTE_LUCENE_INDEX_DIR.format(luceneDirectory));
                 throw new RuntimeException(e);
             }
 

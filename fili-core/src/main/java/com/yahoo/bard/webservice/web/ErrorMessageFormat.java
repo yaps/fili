@@ -257,7 +257,10 @@ public enum ErrorMessageFormat implements MessageFormatter {
                                               "%s operator needs %d parameters but found %d"),
     HAVING_OPERATOR_IMPROPER_RANGE("Upper range cannot be less than the lower range for %s operator."),
 
-    CANNOT_CREATE_INDEX_DIR("Unable to create index directory %s.")
+    CANNOT_CREATE_INDEX_DIR("Unable to create index directory %s."),
+    CANNOT_CLOSE_INDEX_DIR("Unable to close index directory %s."),
+    CANNOT_MOVE_INDEX_DIR("Unable to move index directory %s"),
+    FAIL_TO_WIPTE_LUCENE_INDEX_DIR("Failed to wipe Lucene index at directory: %s")
     ;
 
     private final String messageFormat;

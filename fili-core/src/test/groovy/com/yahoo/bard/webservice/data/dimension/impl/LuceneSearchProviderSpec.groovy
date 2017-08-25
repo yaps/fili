@@ -138,4 +138,6 @@ class LuceneSearchProviderSpec extends SearchProviderSpec<LuceneSearchProvider> 
         threads.each { it.join(10000) }
         threads.each { if ( it.cause != null ) throw it.cause }
     }
+
+
 }
