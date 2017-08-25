@@ -53,8 +53,8 @@ import com.yahoo.bard.webservice.data.config.table.TableLoader;
 import com.yahoo.bard.webservice.data.dimension.DimensionDictionary;
 import com.yahoo.bard.webservice.data.filterbuilders.DefaultDruidFilterBuilder;
 import com.yahoo.bard.webservice.data.filterbuilders.DruidFilterBuilder;
-import com.yahoo.bard.webservice.data.havinggenerators.HavingGeneratorBuilder;
-import com.yahoo.bard.webservice.data.havinggenerators.DefaultHavingApiBuilder;
+import com.yahoo.bard.webservice.data.havinggenerators.HavingGenerator;
+import com.yahoo.bard.webservice.data.havinggenerators.DefaultHavingApiGenerator;
 import com.yahoo.bard.webservice.data.metric.MetricDictionary;
 import com.yahoo.bard.webservice.data.metric.TemplateDruidQueryMerger;
 import com.yahoo.bard.webservice.data.time.GranularityDictionary;
@@ -240,7 +240,6 @@ public abstract class AbstractBinderFactory implements BinderFactory {
                 bind(TemplateDruidQueryMerger.class).to(TemplateDruidQueryMerger.class);
                 bind(buildDruidResponseParser()).to(DruidResponseParser.class);
                 bind(buildDruidFilterBuilder()).to(DruidFilterBuilder.class);
-                bind(buildHavingGeneratorBuilderr()).to(HavingGeneratorBuilder.class);
 
                 //Initialize the field converter
                 FieldConverterSupplier.sketchConverter = initializeSketchConverter();
@@ -262,6 +261,8 @@ public abstract class AbstractBinderFactory implements BinderFactory {
                 bind(loader.getPhysicalTableDictionary()).to(PhysicalTableDictionary.class);
                 bind(loader.getDictionaries()).to(ResourceDictionaries.class);
 
+                bind(buildHavingGenerator()).to(HavingGenerator.class);
+
                 // Bind the request mappers
                 bindRequestMappers(this);
 
@@ -276,7 +277,6 @@ public abstract class AbstractBinderFactory implements BinderFactory {
                 bind(getMappers().getMapper()).to(ObjectMapper.class);
 
                 bind(getWorkflow()).to(RequestWorkflowProvider.class);
-                bind(getDataApiRequest()).to(DataApiRequest.class);
                 bind(getPhysicalTableResolver()).to(PhysicalTableResolver.class);
                 bind(PartialDataHandler.class).to(PartialDataHandler.class);
                 bind(getVolatileIntervalsService()).to(VolatileIntervalsService.class);
@@ -618,12 +618,12 @@ public abstract class AbstractBinderFactory implements BinderFactory {
 
     /**
      * Creates an object that generates map of Api Having from having string.
-     * Constructs a {@link DefaultHavingApiBuilder} by default.
+     * Constructs a {@link DefaultHavingApiGenerator} by default.
      *
      * @return An object to generate having maps from having string.
      */
-    protected HavingGeneratorBuilder buildHavingGeneratorBuilderr() {
-        return new DefaultHavingApiBuilder();
+    protected HavingGenerator buildHavingGenerator() {
+        return new DefaultHavingApiGenerator(loader.getMetricDictionary());
     }
 
     /**
@@ -762,15 +762,6 @@ public abstract class AbstractBinderFactory implements BinderFactory {
      */
     protected Class<? extends RequestWorkflowProvider> getWorkflow() {
         return DruidWorkflow.class;
-    }
-
-    /**
-     * Return a DataApiRequest class to bind to DataApiRequest.
-     *
-     * @return a DataApiRequest class
-     */
-    protected Class<? extends DataApiRequest> getDataApiRequest() {
-        return DataApiRequest.class;
     }
 
     /**

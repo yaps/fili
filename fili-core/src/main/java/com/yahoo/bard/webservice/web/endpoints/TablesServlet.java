@@ -8,7 +8,7 @@ import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import com.yahoo.bard.webservice.application.ObjectMappersSuite;
 import com.yahoo.bard.webservice.data.config.ResourceDictionaries;
 import com.yahoo.bard.webservice.data.filterbuilders.DruidFilterBuilder;
-import com.yahoo.bard.webservice.data.havinggenerators.HavingGeneratorBuilder;
+import com.yahoo.bard.webservice.data.havinggenerators.HavingGenerator;
 import com.yahoo.bard.webservice.data.time.GranularityParser;
 import com.yahoo.bard.webservice.logging.RequestLog;
 import com.yahoo.bard.webservice.logging.blocks.TableRequest;
@@ -452,13 +452,13 @@ public class TablesServlet extends EndpointServlet implements BardConfigResource
     }
 
     /**
-     * Having Api builder isn't used in TablesServlet but is part of the configuration interface, so this is an empty
+     * Having Api generator isn't used in TablesServlet but is part of the configuration interface, so this is an empty
      * implementation.
      *
      * @return null because TablesApiRequest doesn't require it
      */
     @Override
-    public HavingGeneratorBuilder getHavingApiBuilder() {
+    public HavingGenerator getHavingApiGenerator() {
         return null;
     }
 

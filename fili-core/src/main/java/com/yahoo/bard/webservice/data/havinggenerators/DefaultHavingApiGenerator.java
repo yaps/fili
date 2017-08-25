@@ -28,9 +28,20 @@ import static com.yahoo.bard.webservice.web.ErrorMessageFormat.HAVING_METRICS_NO
 /**
  * Generates having objects based on the having query in the api request.
  */
-public class DefaultHavingApiBuilder implements HavingGeneratorBuilder {
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultHavingApiBuilder.class);
+public class DefaultHavingApiGenerator implements HavingGenerator {
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultHavingApiGenerator.class);
     private static final String COMMA_AFTER_BRACKET_PATTERN = "(?<=]),";
+
+    private final MetricDictionary metricDictionary;
+
+    /**
+     * Constructor.
+     *
+     * @param metricDictionary  Metric dictionary contains the map of valid metric names and logical metric objects.
+     */
+    public DefaultHavingApiGenerator(MetricDictionary metricDictionary) {
+        this.metricDictionary = metricDictionary;
+    }
 
     /**
      * Generates having objects based on the having query in the api request.
@@ -38,17 +49,14 @@ public class DefaultHavingApiBuilder implements HavingGeneratorBuilder {
      * @param havingQuery  Expects a URL having query String in the format:
      * (dimension name)-(operation)[(value or comma separated values)]?
      * @param logicalMetrics  The logical metrics used in this query
-     * @param metricDictionary  The metric dictionary to bind parsed metrics from the query
-     *
      * @return Set of having objects.
      *
      * @throws BadApiRequestException if the having query string does not match required syntax.
      */
     @Override
-    public Map<LogicalMetric, Set<ApiHaving>> generateHavings(
+    public Map<LogicalMetric, Set<ApiHaving>> apply(
         String havingQuery,
-        Set<LogicalMetric> logicalMetrics,
-        MetricDictionary metricDictionary
+        Set<LogicalMetric> logicalMetrics
     ) throws BadApiRequestException {
         try (TimedPhase phase = RequestLog.startTiming("GeneratingHavings")) {
             LOG.trace("Metric Dictionary: {}", metricDictionary);
